@@ -1,6 +1,6 @@
 # AWN v. 0.1
 
-AWN is a simple web based newsreader written in php5 with no other dependancies and designed for smartphones with thigt screens.
+AWN is a simple web based newsreader written in php5 with no other dependancies and designed for smartphones with tight screens.
 
 At the moment this code is still experimetal and posting is *not* allowed.
 
