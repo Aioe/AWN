@@ -44,7 +44,7 @@ function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $a
 				$url = set_url("tree", $newsgroup, $start, "");
                                 $container[$diff] = "
 <a href=\"$url\">
-<div style=\"$color border-left: 7px solid $border;\" class=\"main3d\">
+<div style=\"$color border-left: 5px solid $border;\" class=\"main3d\">
                 <div class=\"description\">$subject ($replies)</div>
                 <div class=\"addenda\">by <b>$nick</b> on $date</div>
 </div></a>
@@ -79,7 +79,7 @@ function build_thread($xover, $screen, $thread, $article, $group, $conf)
 
 // plot_tree($xover, $screen, $group, $thread, $article, $conf, $post)
 
-        plot_tree($xover, $screen, $group, $thread, $thread, $conf, $article);
+        plot_tree($xover, $screen, $group, $thread, $thread, $conf, $article, 1);
 
         $mid = $xover[$thread]["Mid"];
 
@@ -92,7 +92,7 @@ function build_thread($xover, $screen, $thread, $article, $group, $conf)
                         if (strstr($xover[$post]["References"], $mid))
                         {
                                 $tt++;
-                                plot_tree($xover, $screen, $group, $thread, $post, $conf, $article);
+                                plot_tree($xover, $screen, $group, $thread, $post, $conf, $article, 0);
                                 $mid = $xover[$post]["Mid"];
                                 $key = array_search($post, $messages);
                                 unset($messages[$key]);
@@ -197,7 +197,7 @@ function build_dep($xover)
 
 
 
-function plot_tree($xover, $screen, $group, $thread, $article, $conf, $post)
+function plot_tree($xover, $screen, $group, $thread, $article, $conf, $post, $isfirst)
 {
         $mid = $xover[$article]["Mid"];
         $from = $xover[$article]["From"];
@@ -220,7 +220,10 @@ function plot_tree($xover, $screen, $group, $thread, $article, $conf, $post)
 
 	if ($article == $post) $bgcolor = "#bbd";
 
-        echo "<ul class=\"lista\">";
+	if ($isfirst) $style = "border-bottom: 1px solid #ccc; padding-left: 2%;";
+	else $style = "";
+
+        echo "<ul style=\"$style\" class=\"lista\">";
         echo "
 <li style=\"background-color: $bgcolor;\">
 <div class=\"tree\" style=\"border-left: 5px solid $border;\"><a style=\"$color\" href=\"$url\"><b>$nick</b><br />$date</a></div>";

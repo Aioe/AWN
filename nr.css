@@ -36,7 +36,7 @@ a {
 
 	.endtoolbar
 	{
-        	margin-top: 5%;
+        	margin-top: 6%;
 	}
 
 	.intestazioni
@@ -44,6 +44,12 @@ a {
         	font-size: larger;
         	line-height: 150%;
 		font-family: monospace;
+	}
+
+	.titolo {
+        	width: auto;
+        	font-size: x-large;
+		padding: 2%;
 	}
 
 
@@ -94,6 +100,15 @@ a {
 	{
 		font-size: small;
 	}
+
+	.titolo {
+        	width: auto;
+	        font-size: x-large;
+		padding-bottom: 2%;
+		padding-left: 2%;
+	}
+
+
 }
 
 
@@ -104,7 +119,6 @@ a {
 		border-left: 5px solid #ccc; 
 		border-top: 1px solid #ccc; 
 		border-bottom: 1px solid #ccc; 
-		margin: 0.5%; 
 		padding: 2%;
 		width: 95%;
 	}
@@ -136,16 +150,8 @@ a {
 
 .toolbaricons
 {
-	padding-left: 5%; 
+	padding-left: 3%; 
 	display: inline-block;
-}
-
-.titolo {
-	margin-left: 1%;
-	width: auto;
-	font-size: x-large;
-	padding-top: 1%;
-	padding-bottom: 1%;
 }
 
 .tree
