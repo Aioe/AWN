@@ -14,11 +14,11 @@ Those who wish to test AWN should follow this checklist:
 * Download the full sources
 * change files owner
 * edit config.php
-** server
-** port
-** base (urlbase ie if script runs at  https://news.aioe.org/nr/ base is "/nr/"
-** spooldir
-** active (list of groups)
+1. server
+2. port
+3. base (urlbase ie if script runs at  https://news.aioe.org/nr/ base is "/nr/"
+4. spooldir
+5. active (list of groups)
 
 * run in a terminal 'php newsagent.php' (only the first time is needed to execute it by hands)
 
