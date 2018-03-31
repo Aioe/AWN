@@ -7,23 +7,14 @@ include("./lib/toolbar.php");
 
 ///////////////////////////////////////////////////////////////////////////
 
-$start = $conf["start"];
+$start 		= $conf["start"];
 
-if (isset($_GET["thread"]))
-{
-	$thread = $_GET["thread"];
-//	if (!is_int($thread)) fatal_error("thread", $thread);
-}
+$thread         = GET_header("thread");
+$newsgroup	= GET_header("group");
+$article 	= GET_header("art");
 
-if (isset($_GET["art"])) $article = $_GET["art"];
-else $article = 0;
-// if (!is_int($article)) fatal_error("art", $article);
-
-if (isset($_GET["group"])) $newsgroup = $_GET["group"];
-else $newsgroup = 0;
-// if (!is_int($newsgroup)) fatal_error("group", $newsgroup);
-
-$screen = $_GET["screen"];
+if (isset($_GET["screen"])) $screen = $_GET["screen"];
+else $screen = "";
 
 if (
 	($screen != "") and

@@ -152,7 +152,7 @@ function set_url($screen, $group, $thread, $article )
 
 function plot_grouplist($config, $screen, $newsgroup, $thread, $article)
 {
-        plot_toolbar($xover, $config, $screen, 0, 0, 0);
+        plot_toolbar(0, $config, $screen, 0, 0, 0);
         $start = $config["start"];
         $id = 0;
         foreach($config["active"] as $group)
@@ -161,7 +161,7 @@ function plot_grouplist($config, $screen, $newsgroup, $thread, $article)
                 $id++;
                 $xover = nntp_xover($config, $group);       
                 $time = 0;
-                foreach($xover as $num => $array) if (($xover[$num]["Group"] == $group) and ($xover[$num]["Time"] > $time)) $time = $xover[$num]["Time"];
+                foreach($xover as $num => $array) if (($num >0) and ($xover[$num]["Group"] == $group) and ($xover[$num]["Time"] > $time)) $time = $xover[$num]["Time"];
                 $diff = time() - $time;
 
                 $colors = set_background_color($diff, $config);
