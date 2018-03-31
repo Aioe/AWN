@@ -1,0 +1,245 @@
+body
+{
+	font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+a {
+	color: #003;
+	text-decoration: none;
+}
+
+@media screen and (min-width: 800px) {
+	.container {
+        	max-width: 80%;
+		width: 80%;
+        	margin: auto;
+	}
+
+	.top {
+  		position: fixed;
+  		top: 0;
+  		z-index: 999;
+  		background-color: #ddf;
+  		border: 1px solid #ccc;
+  		display: inline-block;
+  		width: 77%;
+  		padding: 1%;
+	}
+
+	.toolbaricons
+	{
+        	padding-left: 10%; 
+        	display: inline-block;
+		width: 48px;
+	}
+
+
+	.endtoolbar
+	{
+        	margin-top: 5%;
+	}
+
+	.intestazioni
+	{
+        	font-size: larger;
+        	line-height: 150%;
+		font-family: monospace;
+	}
+
+
+}
+
+
+
+@media screen and (max-width: 800px) {
+	.container {
+		width: 100%;
+        	max-width: 100%;
+        	margin: auto;
+       		min-width: 250px;
+	}
+
+	.top {
+  		position: fixed;
+  		top: 0;
+  		z-index: 999;
+  		left: 0;
+  		margin: auto;
+  		width: 100%;
+  		background-color: #ddf;
+  		border: 1px solid #ccc;
+  		display: inline-block;
+  		max-width: 800px;
+  		font-family: monospace;
+  		overflow:  auto;
+  		word-wrap: break-word;         /* All browsers since IE 5.5+ */
+  		overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
+  		word-break: break-word;
+		padding-top: 1%;
+		padding-bottom: 1%;
+	}
+
+	.endtoolbar
+	{
+        	margin-top: 12%;
+	}
+
+
+	.toolbaricons
+	{
+        	display: inline-block;
+	}
+
+	.intestazioni
+	{
+		font-size: small;
+	}
+}
+
+
+.main3d 
+	{
+		float:left; 
+		border-right: 1px solid #ccc; 
+		border-left: 5px solid #ccc; 
+		border-top: 1px solid #ccc; 
+		border-bottom: 1px solid #ccc; 
+		margin: 0.5%; 
+		padding: 2%;
+		width: 95%;
+	}
+
+.description
+{
+	font-size: larger;
+}
+
+.corpo
+{
+	width: 100%;
+	max-width: 100%;
+        overflow:  auto;
+        word-wrap: break-word;         /* All browsers since IE 5.5+ */
+        overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
+        word-break: break-word;
+}
+
+.testo
+{
+	font-family: monospace;
+	line-height: 150%;
+        overflow:  auto;
+        word-wrap: break-word;         /* All browsers since IE 5.5+ */
+        overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
+        word-break: break-word;
+}
+
+.toolbaricons
+{
+	padding-left: 5%; 
+	display: inline-block;
+}
+
+.titolo {
+	margin-left: 1%;
+	width: auto;
+	font-size: x-large;
+	padding-top: 1%;
+	padding-bottom: 1%;
+}
+
+.tree
+{
+	padding-left: 2%;
+}
+
+.lista
+{
+        border-top: 1px solid #999; 
+        border-left: 1px solid #999;
+        line-height: 1.80857143;
+	background-color: #eaeaea;
+	list-style-type:none;
+}
+
+.lista ul
+{
+	background-color: #E7E7E7;
+	padding-left: 2%;
+}
+
+.lista ul ul
+{
+        background-color: #E4E4E4;
+
+}
+
+
+.lista ul ul ul
+{
+        background-color: #E0E0E0;
+}
+
+.lista ul ul ul ul
+{
+        background-color: #DDDDDD;
+}
+
+.lista ul ul ul ul ul
+{
+        background-color: #DADADA;
+}
+
+
+.lista ul ul ul ul ul ul
+{
+        background-color: #D3D3D3;
+}
+
+.lista ul ul ul ul ul ul ul
+{
+        background-color: #CCCCCC;
+}
+
+.lista ul ul ul ul ul ul ul ul
+{
+        background-color: #C5C5C5;
+}
+
+.lista ul ul ul ul ul ul ul ul ul
+{
+        background-color: #BEBEBE;
+}
+
+
+.lista ul ul ul ul ul ul ul ul ul ul
+{
+        background-color: #BBBBBB;
+}
+
+.lista ul ul ul ul ul ul ul ul ul ul ul
+{
+        background-color: #B8b8b8;
+}
+
+.lista ul ul ul ul ul ul ul ul ul ul ul ul
+{
+        background-color: #B4B4B4;
+}
+
+.lista ul ul ul ul ul ul ul ul ul ul ul ul ul
+{
+        background-color: #B1B1B1;
+}
+
+.lista ul ul ul ul ul ul ul ul ul ul ul ul ul ul
+{
+        background-color: #ADADAD;
+}
+
+.lista ul ul ul ul ul ul ul ul ul ul ul ul ul ul ul
+{
+        background-color: #AAAAAA;
+}
+
+
