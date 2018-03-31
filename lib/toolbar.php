@@ -4,16 +4,10 @@ function plot_toolbar($xover, $conf, $screen, $group, $thread, $article)
 {
         echo "<div class=\"top\">\n";
 
-/*
-	menu.png
-	listgroups.png  ellipsis-v
-	listhreads.png  list-ul
-	tree.png	caret-square-o-down
-	left.png	chevron-left
-	right.png	chevron-right
-*/
-
-        plot_single_icon($conf, "menu", $conf["home"]);
+	if ($screen == "messages")
+	{
+		plot_single_icon($conf, "reply", "post.php?type=reply&amp;group=$group&amp;thread=$thread&amp;art=$article");
+	} else plot_single_icon($conf, "menu", $conf["home"]);
 
 
         if ($screen == "groups") // lista dei gruppi

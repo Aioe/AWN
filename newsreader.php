@@ -9,11 +9,26 @@ include("./lib/toolbar.php");
 
 $start = $conf["start"];
 
+if (isset($_GET["thread"])) $thread = $_GET["thread"];
+else $thread = 0;
+if (!filter_var($thread, FILTER_VALIDATE_INT)) fatal_error("thread", $thread);
 
-$thread = $_GET["thread"];
-$article = $_GET["art"];
-$newsgroup = $_GET["group"];
+if (isset($_GET["art"])) $article = $_GET["art"];
+else $article = 0;
+if (!filter_var($article, FILTER_VALIDATE_INT)) fatal_error("art", $article);
+
+if (isset($_GET["group"])) $newsgroup = $_GET["group"];
+else $newsgroup = 0;
+if (!filter_var($newsgroup, FILTER_VALIDATE_INT)) fatal_error("group", $group);
+
 $screen = $_GET["screen"];
+
+if (
+	($screen != "messages") and
+	($screen != "threadlist") and
+	($screen != "tree") and
+	($screen != "grouplist")) fatal_error("screen", $screen);
+
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -44,11 +59,9 @@ if ($screen == "threadlist")
 	build_thread($xover, $screen, $thread, $article, $newsgroup, $conf);
 } else if ($screen = "messages")
 {
-	plot_message($fp, $xover, $screen, $newsgroup, $thread, $article, $conf);
+	plot_message($xover, $screen, $newsgroup, $thread, $article, $conf);
 
 }
-
-fclose($fp);
 
 ///////////////////////////////////////////////////////////////////////////////////
 

@@ -114,7 +114,7 @@ function build_thread($xover, $screen, $thread, $article, $group, $conf)
 
 // plot_message($fp, $xover, $screen, $newsgroup, $thread, $article, $conf);
 
-function plot_message($fh, $xover, $screen, $group, $thread, $article, $config)
+function plot_message($xover, $screen, $group, $thread, $article, $config)
 {
         plot_toolbar($xover, $config, $screen, $group, $thread, $article);
 
@@ -268,7 +268,11 @@ function show_error_string($error)
 
 }
 
-
+function fatal_error($key, $value)
+{
+	show_error_string("Syntax error in URL options: key '<b>$key</b>' has a value of '<i>$value</i>' that is <b>not</b> allowed here.<br>Please report this failure to the system administrators.");
+	exit(0);
+}
 
 
 ?>
