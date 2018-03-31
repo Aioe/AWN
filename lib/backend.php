@@ -68,4 +68,21 @@ function get_nntp_body($config, $group, $article)
 	return $body;
 
 }
+
+function  GET_header($header)
+{
+        $result = $_GET[$header];
+
+        if ($result)
+        {
+                $res = filter_var($result, FILTER_VALIDATE_INT);
+		if (is_int($res)) return $res;
+		else fatal_error($header, $result);
+        }  else  {
+		return "";
+	} 
+}
+
+
+
 ?>

@@ -50,7 +50,7 @@ function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $a
 </div></a>
 ";
                         } else {
-              			$url = set_url("message", $newsgroup, $start, $start);
+              			$url = set_url("messages", $newsgroup, $start, $start);
 		                $container[$diff] = "
 <a href=\"$url\">
 <div style=\"$color background-color: $bgcolor;  border-left: 5px solid $border;\" class=\"main3d\">
@@ -142,7 +142,7 @@ function plot_message($xover, $screen, $group, $thread, $article, $config)
 function set_url($screen, $group, $thread, $article )
 {
 	$url = "";
-	if (strlen($screen) > 0) $url = "/?screen=$screen";
+	if (strlen($screen) > 0) $url = "?screen=$screen";
 	if (strlen($group) > 0) $url .= "&amp;group=$group";
 	if (strlen($thread) > 0) $url .= "&amp;thread=$thread";
 	if (strlen($article) > 0) $url .= "&amp;art=$article";

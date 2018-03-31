@@ -1,5 +1,4 @@
 <?php
-
 include("/var/www/html/config.php");
 
 $fh = nntp_connect($conf["server"], $conf["port"]);
@@ -166,6 +165,4 @@ function nntp_connect($host, $port)
 
         return $fp;
 }
-
-
 ?>
