@@ -2,7 +2,7 @@
 
 $conf["spooldir"] = "/var/www/html/spool/";
 $conf["home"]   = "https://news.aioe.org/";
-$conf["base"]   = "/test/";
+$conf["base"]   = "/";
 $conf["start"]  = "-500";
 $conf["server"] = "127.0.0.1";
 $conf["port"]   = 119;
