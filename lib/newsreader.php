@@ -1,9 +1,9 @@
 <?php
 
-include("./config.php");
-include("./lib/style.php");
-include("./lib/backend.php");
-include("./lib/toolbar.php");
+include("../config.php");
+include("style.php");
+include("backend.php");
+include("toolbar.php");
 
 ///////////////////////////////////////////////////////////////////////////
 

@@ -6,7 +6,7 @@ function plot_toolbar($xover, $conf, $screen, $group, $thread, $article)
 
 	if ($screen == "messages")
 	{
-		plot_single_icon($conf, "reply", "post.php?type=reply&amp;group=$group&amp;thread=$thread&amp;art=$article");
+		plot_single_icon($conf, "reply", "post.php?type=1&amp;group=$group&amp;thread=$thread&amp;art=$article");
 	} else plot_single_icon($conf, "menu", $conf["home"]);
 
 

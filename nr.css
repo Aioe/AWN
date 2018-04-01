@@ -249,4 +249,61 @@ a {
         background-color: #AAAAAA;
 }
 
+.postheaders
+{
+	border: 1px solid #ccc;
+	background-color: #eee;
+	margin-top: 0.5%;
+	padding: 1%;
+	margin-bottom: 0.5%;
+}
 
+.header
+{
+	width: 20%;
+	display: inline-block;
+	font-size: larger;
+}
+
+.value
+{
+	width: auto;
+        display: inline-block;
+	font-size: larger;
+}
+
+textarea
+{
+	margin-top: 1%;
+	padding: 1%;
+	font-size: larger;
+	width: 98%;
+	height: 400px;
+}
+
+.postingident
+{
+	padding: 1%;
+	width: 100%;
+	margin-bottom: 1%;
+}
+
+.postingident input
+{
+	font-size:larger;
+}
+
+fieldset
+{
+	background-color: #eee;
+	width: auto;
+	margin-top: 1%;
+	margin-bottom: 1%;
+	border: 1px solid #ccc;
+}
+
+legend
+{
+	font-size: larger;
+	background-color: #eee;
+}

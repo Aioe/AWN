@@ -16,7 +16,7 @@
 
 <?php
 
-	include("newsreader.php");
+	include("lib/newsreader.php");
 
 ?>
 
