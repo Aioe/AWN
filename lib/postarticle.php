@@ -9,7 +9,11 @@ include("toolbar.php");
 
 $start          = $conf["start"];
 if (isset($_POST["message"])) $message = $_POST["message"];
+if (isset($_POST["nick"])) $nick = $_POST["nick"];
+if (isset($_POST["email"])) $email = $_POST["email"];
 
+if (!isset($nick)) $nick = "Nomen Nescio";
+if (!isset($email)) $email = "&lt;fake@null.invalid&gt;";
 
 $thread         = GET_header("thread");
 $newsgroup      = GET_header("group");
@@ -52,6 +56,8 @@ if ($type == 1)
 <input type=\"hidden\" name=\"type\" value=\"1\">
 ";
 	post_toolbar($conf, $type, $newsgroup, $thread, $article, $noquote);
+
+	echo "<div class=\"article\">\n";
 
         $group = $conf["active"][$newsgroup];
         $xover = nntp_xover($conf, $group);
@@ -109,8 +115,8 @@ if ($type == 1)
 		echo "
 <fieldset>
     <legend>Posting identity</legend>
-    <div class=\"postingident\"><input style=\"width: 25%;\" type=\"text\" name=\"nick\" value=\"Nomen Nescio\"> <input style=\"width: 70%;\" type=\"text\" name=\"email\" value=\"&lt;test@null.invalid&gt;\"></div>
- </fieldset>";
+    <div class=\"postingident\"><input style=\"width: 25%;\" type=\"text\" name=\"nick\" value=\"$nick\"> <input style=\"width: 70%;\" type=\"text\" name=\"email\" value=\"$email\"></div>
+ </fieldset>\n";
 
 
 	}
@@ -119,8 +125,9 @@ if ($type == 1)
 <textarea name=\"message\">
 $text_to_quote
 </textarea>
-</form>\n";
+</form></div>\n";
 
+	
 }
 
 
@@ -144,6 +151,7 @@ function post_toolbar($conf, $type, $newsgroup, $thread, $article, $noquote)
 	} else {
                 echo "<div class=\"toolbaricons\"><input id=\"magic\" type=\"image\" alt=\"Magic quote\" name=\"magic\" src=\"./png/cancel.png\"></div>\n";
                 echo "<input type=\"hidden\" name=\"noquote\" value=\"1\">";
+		
 	}
 
 
