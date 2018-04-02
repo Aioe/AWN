@@ -273,7 +273,4 @@ function fatal_error($key, $value)
 	show_error_string("Syntax error in URL options: key '<b>$key</b>' has a value of '<i>$value</i>' that is <b>not</b> allowed here.<br>Please report this failure to the system administrators.");
 	return 0;
 }
-
-
 ?>
-

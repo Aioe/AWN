@@ -22,7 +22,7 @@ function plot_toolbar($xover, $conf, $screen, $group, $thread, $article)
                 if ($next > count($conf["active"]) -1) $next = 0;
                 $prev = $group - 1;
                 plot_single_icon($conf, "listgroups", $conf["base"]);
-                plot_single_icon($conf, "listhreads", "");
+                plot_single_icon($conf, "newarticle", "post.php?type=2&amp;group=$group");
                 plot_single_icon($conf, "tree", "");
 
 		$urlp = set_url("threadlist", $prev, $thread, $article );

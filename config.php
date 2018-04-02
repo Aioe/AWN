@@ -1,8 +1,8 @@
 <?php
 
-$conf["spooldir"] = "/var/www/html/spool/";
-$conf["home"]   = "https://news.aioe.org/";
-$conf["base"]   = "/";
+$conf["spooldir"] = "/var/www/html/test/spool";
+$conf["home"]   = "http://5.9.252.135";
+$conf["base"]   = "/test/";
 $conf["start"]  = "-500";
 $conf["server"] = "127.0.0.1";
 $conf["port"]   = 119;

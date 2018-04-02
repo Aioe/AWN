@@ -1,6 +1,6 @@
 <?php
 
-include("../config.php");
+include("config.php");
 include("style.php");
 include("backend.php");
 include("toolbar.php");

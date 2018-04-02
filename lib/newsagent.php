@@ -1,22 +1,24 @@
 <?php
-include("/var/www/html/config.php");
-
-$fh = nntp_connect($conf["server"], $conf["port"]);
-
-$start = $conf["start"];
-$spooldir = $conf["spooldir"];
-
-foreach($conf["active"] as $group)
+function check_nntp($conf)
 {
-	if (strlen($group) == 0) continue;
-	$retgroup 	= get_nntp_group($fh, $group, $start);
-	if (!$retgroup) return(0);
-	$xover 		= get_xover_data($fh, $retgroup[0], $retgroup[1]);
-	$success 	= save_xover_data($group, $xover, $conf["spooldir"]);
-	if ($success == FALSE) return 0;
-	$success	= download_articles($fh, $group, $xover, $conf["spooldir"]);
-}
+	$fh = nntp_connect($conf["server"], $conf["port"]);
+	if (!$fh) exit(0);
 
+	$start = $conf["start"];
+	$spooldir = $conf["spooldir"];
+
+	foreach($conf["active"] as $group)
+	{
+		if (strlen($group) == 0) continue;
+		$retgroup 	= get_nntp_group($fh, $group, $start);
+		if (!$retgroup) return(0);
+		$xover 		= get_xover_data($fh, $retgroup[0], $retgroup[1]);
+		$success 	= save_xover_data($group, $xover, $conf["spooldir"]);
+		if ($success == FALSE) return 0;
+		$success	= download_articles($fh, $group, $xover, $conf["spooldir"]);
+	}
+	fclose($fh);
+}
 
 function download_articles($fh, $group, $xover, $spooldir)
 {
@@ -45,7 +47,6 @@ function download_articles($fh, $group, $xover, $spooldir)
 	}
 	return TRUE;
 }
-
 function get_nntp_article($fh, $path, $group, $article)
 {
 	fputs($fh, "ARTICLE $article\r\n");
@@ -78,7 +79,7 @@ function save_xover_data($group, $xover, $spooldir)
 	$fg = fopen($path, "w+");
 	if (!$fg)
 	{
-		show_error_string("Unable to open $path\n");
+		show_error_string("Unable to open XOVER database: $path\n");
 		return FALSE;
 	}
 
@@ -128,41 +129,5 @@ function get_nntp_group($fh, $group, $start)
 
 	return array($min,$max);
 
-}
-
-
-
-function show_error_string($string)
-{
-	echo $string;
-}
-
-
-function nntp_connect($host, $port)
-{
-        $fp = fsockopen ($host, $port, $errno, $errstr, 1); 
-        if (!$fp) { 
-                show_error_string("Error opening socket connection with $host:$port: error nr $errno $errstr");
-                return FALSE;
-        } 
-
-        $welcome = fgets($fp, 1024);
-
-        if ( !preg_match("/^200/", $welcome) )
-        {
-                show_error_string("Error getting greetings from server: $host:$port replies $welcome");
-                return FALSE;
-        }
-
-        fputs($fp, "MODE READER\r\n");
-        $welcome = fgets($fp, 1024);
-
-        if ( !preg_match("/^200/", $welcome) )
-        {
-                show_error_string("Error getting MODE READER greetings from server: $host:$port replies $welcome");
-                return FALSE;
-        }
-
-        return $fp;
 }
 ?>

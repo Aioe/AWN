@@ -52,6 +52,11 @@ function get_nntp_body($config, $group, $article)
 
 	$file = $config["spooldir"] . "/data/$group/$article";
 	$art = file($file);
+	if (!$art)
+	{
+		show_error_string("Unable to fetch body content from file $file, aborting");
+		return 0;
+	}
 	$body = "";
 	$headers = 1;
 
@@ -93,6 +98,32 @@ function  GET_header($header)
 	else return "";
 }
 
+function nntp_connect($host, $port)
+{
+        $fp = fsockopen ($host, $port, $errno, $errstr, 1); 
+        if (!$fp) { 
+                show_error_string("Error opening socket connection with $host:$port: error nr $errno $errstr");
+                return FALSE;
+        } 
 
+        $welcome = fgets($fp, 1024);
+
+        if ( !preg_match("/^200/", $welcome) )
+        {
+                show_error_string("Error getting greetings from server: $host:$port replies $welcome");
+                return FALSE;
+        }
+
+        fputs($fp, "MODE READER\r\n");
+        $welcome = fgets($fp, 1024);
+
+        if ( !preg_match("/^200/", $welcome) )
+        {
+                show_error_string("Error getting MODE READER greetings from server: $host:$port replies $welcome");
+                return FALSE;
+        }
+
+        return $fp;
+}
 
 ?>
