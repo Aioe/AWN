@@ -54,7 +54,7 @@ function get_nntp_body($config, $group, $article)
 	$art = file($file);
 	if (!$art)
 	{
-		show_error_string("Unable to fetch body content from file $file, aborting");
+		show_error_string("Unable to fetch body content from file $file, aborting", 0);
 		return 0;
 	}
 	$body = "";
@@ -102,7 +102,7 @@ function nntp_connect($host, $port)
 {
         $fp = fsockopen ($host, $port, $errno, $errstr, 1); 
         if (!$fp) { 
-                show_error_string("Error opening socket connection with $host:$port: error nr $errno $errstr");
+                show_error_string("Error opening socket connection with $host:$port: error nr $errno $errstr", 1);
                 return FALSE;
         } 
 
@@ -110,7 +110,7 @@ function nntp_connect($host, $port)
 
         if ( !preg_match("/^200/", $welcome) )
         {
-                show_error_string("Error getting greetings from server: $host:$port replies $welcome");
+                show_error_string("Error getting greetings from server: $host:$port replies $welcome", 1);
                 return FALSE;
         }
 
@@ -119,7 +119,7 @@ function nntp_connect($host, $port)
 
         if ( !preg_match("/^200/", $welcome) )
         {
-                show_error_string("Error getting MODE READER greetings from server: $host:$port replies $welcome");
+                show_error_string("Error getting MODE READER greetings from server: $host:$port replies $welcome", 1);
                 return FALSE;
         }
 

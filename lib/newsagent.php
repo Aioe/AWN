@@ -53,7 +53,7 @@ function get_nntp_article($fh, $path, $group, $article)
 	$banner = fgets($fh, 1024);
 	if (!preg_match("/^220/", $banner))
 	{
-		show_error_string("Sending ARTICLE $article server replies $banner\n");
+		show_error_string("Sending ARTICLE $article server replies $banner\n", 0);
 		return FALSE;
 	}	
 	$art = "";
@@ -79,7 +79,7 @@ function save_xover_data($group, $xover, $spooldir)
 	$fg = fopen($path, "w+");
 	if (!$fg)
 	{
-		show_error_string("Unable to open XOVER database: $path\n");
+		show_error_string("Unable to open XOVER database: $path\n", 1);
 		return FALSE;
 	}
 
@@ -96,7 +96,7 @@ function get_xover_data($fh, $min, $max)
         $banner = fgets($fh, 1024);
         if (!preg_match("/^224/", $banner))
         {
-                show_error_string("Error getting XOVER $min- output: server replies $banner");
+                show_error_string("Error getting XOVER $min- output: server replies $banner", 1);
 		exit(5);
         }
         $xover = array();
@@ -117,7 +117,7 @@ function get_nntp_group($fh, $group, $start)
         $banner = fgets($fh, 1024);
         if (!preg_match("/^211/", $banner))
         {
-                show_error_string("Error getting GROUP $group output: server replies $banner");
+                show_error_string("Error getting GROUP $group output: server replies $banner", 1);
                 return FALSE;
         }
         $elems = explode(" ", $banner );

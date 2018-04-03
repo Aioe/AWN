@@ -52,8 +52,10 @@ function plot_toolbar($xover, $conf, $screen, $group, $thread, $article)
 
         } elseif ($screen == "messages") {   // messaggio
                 $xover = set_next_article($xover, $group, $thread, $article);
-                $prev = $xover[$article]["thread"]["prev"];
-                $next = $xover[$article]["thread"]["next"];
+                if (isset($xover[$article]["thread"]["prev"])) $prev = $xover[$article]["thread"]["prev"];
+		else $prev = "";
+                if (isset($xover[$article]["thread"]["next"])) $next = $xover[$article]["thread"]["next"];
+		else $next = "";
 
 		$url = set_url("threadlist", $group, $thread, $article );
 

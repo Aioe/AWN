@@ -262,8 +262,9 @@ function clean_body_line($line)
 	return $output;
 }
 
-function show_error_string($error)
+function show_error_string($error, $html)
 { 
+	if ($html == 1)	print_html_head();
         echo 
                 "<br />  
                 <div style=\"max-width: 80%; width: 80%; border: 1px solid #f99; margin-left: 10%; padding-left: 1%; padding-right: 1%; padding-top: 1%;\">
@@ -272,12 +273,50 @@ function show_error_string($error)
                 </div>
 
 ";
+	print_html_tail();
+	exit(0);
 
 }
 
 function fatal_error($key, $value)
 {
-	show_error_string("Syntax error in URL options: key '<b>$key</b>' has a value of '<i>$value</i>' that is <b>not</b> allowed here.<br>Please report this failure to the system administrators.");
+	show_error_string("Syntax error in URL options: key '<b>$key</b>' has a value of '<i>$value</i>' that is <b>not</b> allowed here.<br>Please report this failure to the system administrators.", 1);
 	return 0;
 }
+
+function print_html_head()
+{
+        echo "
+<!DOCTYPE html>
+<html lang=\"en\">
+  <head>
+  <meta charset=\"utf-8\">
+    <meta name=\"description\" content=\"Aioe.org Newsreader\">
+    <meta name=\"author\" content=\"Aioe\">
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=0.85\">
+    <title>Aioe.org Newsreader</title>
+
+    <link rel=\"stylesheet\" href=\"./nr.css\">
+    <meta name=\"keywords\" content=\"Aioe.org NNTP USENET PUBLIC SERVER\" />
+</head>
+<body>
+
+<div class=\"container\">
+";
+
+
+}
+
+function print_html_tail()
+{
+        echo "
+</div>
+
+</body>
+</html>";
+}
+
+
+
+
 ?>

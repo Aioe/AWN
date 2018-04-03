@@ -28,7 +28,7 @@ if ($type == 1)
 
 if ($type == 2)
 {
-	$thread = 0;
+	$thread         = GET_header("thread");
 	$article = 0;
 	$noquote = 0;
 }
@@ -46,7 +46,7 @@ if ($type == 1)
 
 ///////////////////////////////////////////////////////
 
-if ($type == 1)
+if ($type == 1) // Reply
 {
 
 	if ($send > 0)
@@ -59,7 +59,7 @@ if ($type == 1)
 			if ($output == TRUE)
                         {
                                 check_nntp($conf);
-                                $url = $conf["home"] . $conf["base"] . "index.php?screen=threadlist&group=$newsgroup";
+                                $url = $conf["home"] . $conf["base"] . "index.php?screen=tree&group=$newsgroup&thread=$thread";
                                 header("Location: $url");
                         }
 		}
@@ -67,7 +67,7 @@ if ($type == 1)
 }
 
 
-if ($type == 2)
+if ($type == 2) // New message
 {
 	if ($send > 0)
 	{
@@ -76,7 +76,7 @@ if ($type == 2)
 			if ($output == TRUE)
 			{
 				check_nntp($conf);
-				$url = $conf["home"] . $conf["base"] . "index.php?screen=tree&group=$newsgroup&thread=thread&article=$article";
+				$url = $conf["home"] . $conf["base"] . "index.php?screen=threadlist&group=$newsgroup";
 				header("Location: $url");
 			}		
 		}
@@ -164,7 +164,7 @@ if (($type == 1) or ($type == 2))
 ";
 	if (!isset($subject))
 	{
-                echo "
+    		echo "
 <fieldset>
     <legend>Subject</legend>
     <div class=\"postingident\"><input style=\"width: 95%;\" type=\"text\" name=\"subject\" value=\"my subject\"></div>
@@ -173,7 +173,7 @@ if (($type == 1) or ($type == 2))
 	}
 
 
-	if (!isset($sender))
+	if (!$sender)
 	{
 		echo "
 <fieldset>
@@ -258,8 +258,9 @@ function post_reply($conf, $newsgroup, $thread, $article, $message, $subject, $n
 
 	foreach($mexbody as $mexline)
 	{
+		$mexline = "";
 		$mexline = rtrim($mexline);
-		if ($mexline[0] == ".") $usenet_body .= " $mexline\r\n";
+		if (preg_match("/^\./", $mexline)) $usenet_body[] = " $mexline\r\n";
 		else $usenet_body[] = "$mexline\r\n"; 
 	}
 
@@ -273,7 +274,7 @@ function post_reply($conf, $newsgroup, $thread, $article, $message, $subject, $n
 	$banner = fgets($fh, 1024);
 	if (!preg_match("/^340/", $banner))
 	{
-		show_error_string("Sending POST, server replies $banner, aborting");
+		show_error_string("Sending POST, server replies $banner, aborting", 1);
 		fclose($fh);
 		return FALSE;
 	}	
@@ -293,7 +294,7 @@ function post_reply($conf, $newsgroup, $thread, $article, $message, $subject, $n
         $banner = fgets($fh, 1024);
         if (!preg_match("/^240/", $banner))
 	{
-		show_error_string("After sending message, server replies <b>$banner</b>, aborting");
+		show_error_string("After sending message, server replies <b>$banner</b>, aborting", 1);
 		fclose($fh);
 		return FALSE;
 	}
@@ -307,7 +308,7 @@ function nntp_get_header($conf, $group, $article, $header)
 	$lines = file($file);
 	if (!$lines)
 	{
-		show_error_string("Unable to read data from $file, which is needed to post an article");
+		show_error_string("Unable to read data from $file, which is needed to post an article", 1);
 		return 0;
 	}
 
@@ -322,8 +323,6 @@ function nntp_get_header($conf, $group, $article, $header)
 		}
 	}
 
-	fclose($fh);
-
 	return FALSE;
 }
 
@@ -336,7 +335,7 @@ function post_new_message($conf, $group, $message, $subject, $nick, $email)
         $banner = fgets($fh, 1024);
         if (!preg_match("/^340/", $banner))
         {
-                show_error_string("Sending POST, server replies $banner, aborting");
+                show_error_string("Sending POST, server replies $banner, aborting", 1);
                 fclose($fh);
                 return FALSE;
         }
@@ -364,7 +363,7 @@ function post_new_message($conf, $group, $message, $subject, $nick, $email)
         $banner = fgets($fh, 1024);
         if (!preg_match("/^240/", $banner))
         {
-                show_error_string("After sending message, server replies <b>$banner</b>, aborting");
+                show_error_string("After sending message, server replies <b>$banner</b>, aborting", 1);
                 fclose($fh);
                 return FALSE;
         }
@@ -373,38 +372,5 @@ function post_new_message($conf, $group, $message, $subject, $nick, $email)
 	return TRUE;
 
 }
-
-function print_html_head()
-{
-	echo "
-<!DOCTYPE html>
-<html lang=\"en\">
-  <head>
-  <meta charset=\"utf-8\">
-    <meta name=\"description\" content=\"Aioe.org Newsreader\">
-    <meta name=\"author\" content=\"Aioe\">
-    <meta name=\"viewport\" content=\"width=device-width, initial-scale=0.85\">
-    <title>Aioe.org Newsreader</title>
-
-    <link rel=\"stylesheet\" href=\"./nr.css\">
-    <meta name=\"keywords\" content=\"Aioe.org NNTP USENET PUBLIC SERVER\" />
-</head>
-<body>
-
-<div class=\"container\">
-";
-
-
-}
-
-function print_html_tail()
-{
-	echo "
-</div>
-
-</body>
-</html>";
-}
-
 ?>
 
