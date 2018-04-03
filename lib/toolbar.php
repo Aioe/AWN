@@ -104,7 +104,7 @@ function set_next_thread($xover, $group, $thread)
 
 	foreach($xover as $ordinal => $array)
 	{
-		if ((strlen($xover[$ordinal]["References"]) == 0) and ($ordinal > 0))
+		if (isset($xover[$ordinal]["References"]))
 		{
 			$records = $xover[$ordinal]["followup"];
 			$localmax = 0;

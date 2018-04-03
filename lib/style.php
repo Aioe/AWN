@@ -10,10 +10,7 @@ function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $a
 
         foreach ($xover as $start => $array)
         {
-                if (
-                        (strlen($xover[$start]["References"]) == 0) and // capo di thred
-                        ($start > 0) // per evitare 'mid'
-                   ) 
+                if (isset($xover[$start]["References"]))  // capo di thread
                 {
                         $subject = $xover[$start]["Subject"];
                         $from = $xover[$start]["From"];
@@ -185,12 +182,15 @@ function build_dep($xover)
 
         foreach ($xover as $num => $array)
         {
-                $mid = $xover[$num]["Mid"];
-                $replies = array();
-                foreach($xover as $item => $array) if (strstr($xover[$item]["References"], $mid)) $replies[] = $item;
-                $xover[$num]["nr_followup"] = count($replies);
-                krsort($replies);
-                $xover[$num]["followup"] = $replies;
+		if ($num > 0)
+		{
+                	$mid = $xover[$num]["Mid"];
+                	$replies = array();
+                	foreach($xover as $item => $array) if (($item > 0) and (isset($xover[$item]["References"])) and (strstr($xover[$item]["References"], $mid))) $replies[] = $item;
+                	$xover[$num]["nr_followup"] = count($replies);
+                	krsort($replies);
+                	$xover[$num]["followup"] = $replies;
+		}
         }
         return $xover;
 }
@@ -226,7 +226,7 @@ function plot_tree($xover, $screen, $group, $thread, $article, $conf, $post, $is
         echo "<ul style=\"$style\" class=\"lista\">";
         echo "
 <li style=\"background-color: $bgcolor;\">
-<div class=\"tree\" style=\"border-left: 5px solid $border;\"><a style=\"$color\" href=\"$url\"><b>$nick</b><br />$date</a></div>";
+<div class=\"tree\" style=\"border-left: 5px solid $border;\"><a href=\"$url\"><b>$nick</b><br />$date</a></div>";
 
 }
 
@@ -247,12 +247,19 @@ function clean_body_line($line)
 {
         $output = rtrim($line);
         $leng = strlen($output);
-        if ($output[$leng-1] == "=") $nobreak = 1;
-        $output = quoted_printable_decode($output);
-        $output = htmlentities($output, ENT_SUBSTITUTE);
-        if ($nobreak == 0) $output .= "<br />\n";
-        return $output;
+	if (
+		(!isset($leng)) or ($leng == 0)
+	   ) $leng = 0;
+	else $leng--;
+	$nobreak = 0;
 
+	if (!isset($output[$leng])) return "";
+
+       	if ($output[$leng] == "=") $nobreak = 1;
+       	$output = quoted_printable_decode($output);
+       	$output = htmlentities($output, ENT_SUBSTITUTE);
+	if ($nobreak == 0) $output .= "<br />\n";
+	return $output;
 }
 
 function show_error_string($error)
