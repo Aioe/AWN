@@ -10,7 +10,11 @@ function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $a
 
         foreach ($xover as $start => $array)
         {
-                if (isset($xover[$start]["References"]))  // capo di thread
+                if (
+			(isset($xover[$start]["References"])) and
+			(strlen($xover[$start]["References"]) == 0) and
+			($start > 0)
+		   )
                 {
                         $subject = $xover[$start]["Subject"];
                         $from = $xover[$start]["From"];

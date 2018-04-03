@@ -1,8 +1,7 @@
 
-# AWN v. 0.1 (ALPHA RELEASE)
+# AWN v. 0.1 (ALPHA RELEASE -- DO NOT USE IT YET)
 
 AWN is a simple web based newsreader written in php5 with no other dependancies and designed for smartphones with tight screens. 
-
 
 Due security reasons, mostly in order to avoid floods, the main script doesn't directly query the remote news server but reads all data that needs from a file based spool managed by getnews.php, 
 another script included in the source code. 
