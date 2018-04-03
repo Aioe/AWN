@@ -147,8 +147,8 @@ function set_next_thread($xover, $group, $thread)
 
 function set_next_article($xover, $group, $thread, $article)
 {
-        $messages = $xover[$thread]["followup"];        
-        $mid = $xover[$thread]["Mid"];
+        if (isset($xover[$thread]["followup"])) $messages = $xover[$thread]["followup"];        
+        if (isset($xover[$thread]["Mid"]))      $mid = $xover[$thread]["Mid"];
 
         $xover[$thread]["thread"]["prev"] = 0;
         $xover[$thread]["thread"]["next"] = 0;

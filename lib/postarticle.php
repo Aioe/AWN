@@ -26,6 +26,13 @@ if ($type == 1)
 	$noquote 	= GET_header("noquote");
 }
 
+if ($type == 2)
+{
+	$thread = 0;
+	$article = 0;
+	$noquote = 0;
+}
+
 $send 		= GET_header("x");
 
 if ($type == 0) fatal_error("type", $type);
@@ -84,8 +91,8 @@ print_html_head();
 if (($type == 1) or ($type == 2))
 {
         echo "<form action=\"post.php\" method=\"post\">";
-	if ($article) echo "<input type=\"hidden\" name=\"art\" value=\"$article\">";
-	if ($thread) echo "<input type=\"hidden\" name=\"thread\" value=\"$thread\">";
+	if ($article > 0) echo "<input type=\"hidden\" name=\"art\" value=\"$article\">";
+	if ($thread  > 0) echo "<input type=\"hidden\" name=\"thread\" value=\"$thread\">";
 	echo "
 <input type=\"hidden\" name=\"group\" value=\"$newsgroup\">
 <input type=\"hidden\" name=\"type\" value=\"$type\">
@@ -128,6 +135,8 @@ if ($type == 1)
 
 }
 
+if ($type == 2) $text_to_quote = "";
+
 if (($type == 1) or ($type == 2))
 {	
 	$sender = get_sender($conf);
@@ -139,7 +148,7 @@ if (($type == 1) or ($type == 2))
 </div>";
 	}
 
-	if (($subject) and (!preg_match("/^RE: /i", $subject))) $subject = "Re: $subject";
+	if ((isset($subject)) and (!preg_match("/^RE: /i", $subject))) $subject = "Re: $subject";
 
 	echo "
 <div class=\"postheaders\">
@@ -147,13 +156,13 @@ if (($type == 1) or ($type == 2))
 	<div class=\"value\">$group</div>
 </div>";
 
-	if ($subject) echo "
+	if (isset($subject)) echo "
 <div class=\"postheaders\">
         <div class=\"header\">Subject</div>
         <div class=\"value\">$subject</div>
 </div>
 ";
-	if (!$subject)
+	if (!isset($subject))
 	{
                 echo "
 <fieldset>
@@ -164,7 +173,7 @@ if (($type == 1) or ($type == 2))
 	}
 
 
-	if (!$sender)
+	if (!isset($sender))
 	{
 		echo "
 <fieldset>
