@@ -24,6 +24,12 @@ if (
 	($screen != "grouplist")) fatal_error("screen", $screen);
 
 
+if ($newsgroup)
+{
+	$groupcount = count($conf["active"]);
+	if (($newsgroup >= $groupcount) or ($newsgroup == 0)) show_error_string("Parameter 'newsgroup' has an invalid value '<i>$newsgroup</i>', aborting", 1);
+} 
+
 print_html_head();
 
 //////////////////////////////////////////////////////////////////////////////
@@ -43,6 +49,10 @@ if (!$xover)
 }
 krsort($xover);
 $xover = build_dep($xover);
+
+if (($thread  > 0) and (!check_article_exist($xover, $thread))) show_error_string("Parameter 'thread' has an invalid value of '<i>$thread</i>'", 1);
+if (($article > 0) and (!check_article_exist($xover, $article))) show_error_string("Parameter 'art' has an invalid value of '<i>$article</i>'", 1);
+
 
 if ($screen == "threadlist")
 {

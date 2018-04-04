@@ -179,9 +179,13 @@ function post_reply($conf, $newsgroup, $thread, $article, $message, $subject, $n
 		fclose($fh);
 		return FALSE;
 	}	
+
+	$senderip = get_sender_ip();
+
 	fputs($fh, "From: $sender\r\n");
 	fputs($fh, "Newsgroups: $destination_groups\r\n");
 	fputs($fh, "Date: $date\r\n");
+	fputs($fh, "X-Sender-IP: $senderip\r\n");
 	fputs($fh, "Subject: $subject\r\n");
 	fputs($fh, "References: $references\n");
 	fputs($fh, "User-Agent: AWN v. 0.1 (https://github.com/Aioe/AWN)\r\n");
@@ -246,6 +250,9 @@ function post_new_message($conf, $group, $message, $subject, $nick, $email)
 	$email = str_replace("\"", "", $email);
 	$sender = "$nick <$email>";
 
+	$senderip = get_sender_ip();
+
+	fputs($fh, "X-Sender-IP: $senderip\r\n");
 	fputs($fh, "From: $sender\r\n");
 	fputs($fh, "Subject: $subject\r\n");
 	fputs($fh, "Newsgroups: $group\r\n");
@@ -436,6 +443,16 @@ function quote_text($conf, $xover, $group, $article)
 
 	return $text_to_quote;
 }
+
+function get_sender_ip()
+{
+	if (isset($_SERVER['REMOTE_ADDR'])) return $_SERVER['REMOTE_ADDR'];
+	if (isset($_SERVER['REMOTE_HOST'])) return $_SERVER['REMOTE_HOST'];
+	if (isset($_SERVER['HTTP_CLIENT_IP'])) return $_SERVER['HTTP_CLIENT_IP'];
+	if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) return $_SERVER['HTTP_X_FORWARDED_FOR'];
+	return "Unknown address";
+}
+
 
 ?>
 

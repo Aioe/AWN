@@ -17,6 +17,11 @@ Those who wish to test AWN should follow this checklist:
 4. spooldir
 5. active (list of groups)
 
+* create directories
+1. ./spool/
+2. ./spool/xover
+3. ./spool/data  
+
 * run in a terminal 'php getnews.php' (only the first time is needed to execute it by hands)
 
 Those who need help can send a message to aioe.helpdesk (an USENET group) or by mail to estasi@aioe.org
