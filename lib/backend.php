@@ -79,6 +79,7 @@ function  GET_header($header)
         if (isset($_GET[$header])) 
 	{	
 		$result = $_GET[$header];
+		if ($result < 0) $result = $result * -1; // sanitize
         	if ($result)
         	{
                 	$res = filter_var($result, FILTER_VALIDATE_INT);
@@ -88,6 +89,7 @@ function  GET_header($header)
 	} else if (isset($_POST[$header])) 
         {
                 $result = $_POST[$header];
+		if ($result < 0) $result = $result * -1;
                 if ($result)
                 {
                         $res = filter_var($result, FILTER_VALIDATE_INT);
@@ -125,5 +127,15 @@ function nntp_connect($host, $port)
 
         return $fp;
 }
+
+function check_article_exist($xover, $value)
+{
+        foreach($xover as $num => $array)
+        {
+                if ($num == $value) return TRUE;
+        }
+        return FALSE;
+}
+
 
 ?>

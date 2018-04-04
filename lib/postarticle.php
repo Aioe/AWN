@@ -19,6 +19,9 @@ if (!isset($email)) $email = "&lt;fake@null.invalid&gt;";
 $newsgroup      = GET_header("group");
 $type           = GET_header("type");
 
+$groupcount = count($conf["active"]);
+if (($newsgroup >= $groupcount) or ($newsgroup == 0)) show_error_string("Parameter 'group' has an invalid value '<i>$newsgroup</i>', aborting", 1);
+
 if ($type == 1)
 {
 	$thread         = GET_header("thread");
@@ -32,6 +35,22 @@ if ($type == 2)
 	$article = 0;
 	$noquote = 0;
 }
+$group = $conf["active"][$newsgroup];
+
+$xover = nntp_xover($conf, $group);
+if (!$xover)
+{
+        return 0;
+}
+krsort($xover);
+$xover = build_dep($xover);
+
+
+if (($thread  > 0) and (!check_article_exist($xover, $thread))) show_error_string("Parameter 'thread' has an invalid value of '<i>$thread</i>'", 1);
+if (($article > 0) and (!check_article_exist($xover, $article))) show_error_string("Parameter 'art' has an invalid value of '<i>$article</i>'", 1);
+
+
+if ($article != 0) 
 
 $send 		= GET_header("x");
 
