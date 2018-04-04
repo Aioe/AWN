@@ -59,13 +59,28 @@ function get_nntp_body($config, $group, $article)
 	}
 	$body = "";
 	$headers = 1;
+	$quote = 0;
+	$swit = 0;
 
 	foreach($art as $line)
 	{
 		if ($line[0] == "\r") $headers = 0;
 		if ($headers == 0)
 		{
-			$clean = clean_body_line($line);
+			$clean = clean_body_line($line, $config, $group, $article);
+			if (($quote == 1) and (!preg_match("/^&gt;/i", $clean)))
+			{
+				$quote = 0;
+				$clean = "</div>$clean<br />\n";
+			}
+			if ((preg_match("/^&gt\;/i", $clean ))  and ($quote == 0))
+			{
+				if ($swit > 0) $clean = "<br><div class=\"quote\">$clean";
+				else $clean = "<div class=\"quote\">$clean";
+				$quote = 1;
+				$swit++;
+			}
+		
 			$body .= $clean;
 		}
 	}
@@ -137,5 +152,28 @@ function check_article_exist($xover, $value)
         return FALSE;
 }
 
+function nntp_get_header($conf, $group, $article, $header, $html)
+{
+        $file = $conf["spooldir"] . "/data/" . "$group/" . "$article";
+        $lines = file($file);
+        if (!$lines)
+        {
+                show_error_string("Unable to read data from $file, which is needed to post an article", $html);
+                return 0;
+        }
+
+        $headers = 1;
+        foreach($lines as $line)
+        {
+                if ($line[0] == "\r") $headers = 0;
+                if ($headers == 1)
+                {
+                        $elems = explode(": ", $line, 2);
+                        if (preg_match("/$header/i", $elems[0])) return rtrim($elems[1]);
+                }
+        }
+
+        return FALSE;
+}
 
 ?>

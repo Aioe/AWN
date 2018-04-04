@@ -71,7 +71,7 @@ if ($type == 1) // Reply
 
 	if ($send > 0)
 	{
-		$subject = nntp_get_header($conf, $conf["active"][$newsgroup], $article, "Subject");
+		$subject = nntp_get_header($conf, $conf["active"][$newsgroup], $article, "Subject", 1);
 		if (!preg_match("/Re:/i", $subject)) $subject = "Re: $subject";
 		if (strlen($message) > 0) 
 		{
@@ -181,8 +181,8 @@ function post_reply($conf, $newsgroup, $thread, $article, $message, $subject, $n
         $email = str_replace("<", "", $email);  
         $email = str_replace("\"", "", $email);
         $sender = "$nick <$email>";
-	$destination_groups = nntp_get_header($conf, $conf["active"][$newsgroup], $article, "Followup-To");
-	if (!$destination_groups) $destination_groups = nntp_get_header($conf, $conf["active"][$newsgroup], $article, "Newsgroups");
+	$destination_groups = nntp_get_header($conf, $conf["active"][$newsgroup], $article, "Followup-To", 1);
+	if (!$destination_groups) $destination_groups = nntp_get_header($conf, $conf["active"][$newsgroup], $article, "Newsgroups", 1);
 
 	$mexbody = explode("\n", $message);
 
@@ -234,30 +234,6 @@ function post_reply($conf, $newsgroup, $thread, $article, $message, $subject, $n
 	}
 
 	return TRUE;
-}
-
-function nntp_get_header($conf, $group, $article, $header)
-{
-	$file = $conf["spooldir"] . "/data/" . "$group/" . "$article";
-	$lines = file($file);
-	if (!$lines)
-	{
-		show_error_string("Unable to read data from $file, which is needed to post an article", 1);
-		return 0;
-	}
-
-	$headers = 1;
-	foreach($lines as $line)
-        {
-                if ($line[0] == "\r") $headers = 0;
-                if ($headers == 1)
-                {
-			$elems = explode(": ", $line, 2);
-			if (preg_match("/$header/i", $elems[0])) return rtrim($elems[1]);
-		}
-	}
-
-	return FALSE;
 }
 
 function post_new_message($conf, $group, $message, $subject, $nick, $email)
