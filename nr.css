@@ -1,6 +1,7 @@
 body
 {
 	font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+	border-radius: 2%;
 }
 
 a {
@@ -53,6 +54,12 @@ a {
 		padding-left: 1%;
 	}
 
+	.toolbaricons
+	{
+        	width: 6%; 
+        	display: inline-block;
+	}
+
 
 }
 
@@ -92,11 +99,6 @@ a {
 	}
 
 
-	.toolbaricons
-	{
-        	display: inline-block;
-	}
-
 	.intestazioni
 	{
 		font-size: small;
@@ -107,6 +109,12 @@ a {
 	        font-size: x-large;
 		padding-bottom: 2%;
 		padding-left: 2%;
+	}
+
+	.toolbaricons
+	{
+        	padding-left: 3%; 
+        	display: inline-block;
 	}
 
 
@@ -148,12 +156,6 @@ a {
         word-wrap: break-word;         /* All browsers since IE 5.5+ */
         overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
         word-break: break-word;
-}
-
-.toolbaricons
-{
-	padding-left: 3%; 
-	display: inline-block;
 }
 
 .tree
