@@ -36,7 +36,7 @@ if ($type == 2)
 $send 		= GET_header("x");
 
 if ($type == 0) fatal_error("type", $type);
-if ($newsgroup == 0) fatal_error("group", $group);
+if ($newsgroup == 0) fatal_error("group", $newgroup);
 
 if ($type == 1) 
 {
@@ -45,6 +45,7 @@ if ($type == 1)
 }
 
 ///////////////////////////////////////////////////////
+
 
 if ($type == 1) // Reply
 {
@@ -88,110 +89,8 @@ if ($type == 2) // New message
 
 print_html_head();
 
-if (($type == 1) or ($type == 2))
-{
-        echo "<form action=\"post.php\" method=\"post\">";
-	if ($article > 0) echo "<input type=\"hidden\" name=\"art\" value=\"$article\">";
-	if ($thread  > 0) echo "<input type=\"hidden\" name=\"thread\" value=\"$thread\">";
-	echo "
-<input type=\"hidden\" name=\"group\" value=\"$newsgroup\">
-<input type=\"hidden\" name=\"type\" value=\"$type\">
-";
-	post_toolbar($conf, $type, $newsgroup, $thread, $article, $noquote);
-	echo "<div class=\"article\">\n";
-	$group = $conf["active"][$newsgroup];
-}
-
-
-if ($type == 1)
-{
-        $xover = nntp_xover($conf, $group);
-        $subject = $xover[$article]["Subject"];
-	$from = $xover[$article]["From"];
-	$date = $xover[$article]["Date"];
-	if ($noquote == 0)
-	{
-		$from = $xover[$article]["From"];
-        	$date = $xover[$article]["Date"];
-		$text = get_nntp_body($conf, $group, $article);
-		$quoted_text = str_replace("\n", "\n> ", $text);
-		$quoted_text = str_replace("<br />\n", "\n", $quoted_text);
-		$quote_head  = "On $date $from wrote:";
-		$text_to_quote = "$quote_head\n$quoted_text\n";
-	} else if ($noquote == 1) $text_to_quote = "";
-	else if ($noquote == 2) {
-                $from = $xover[$article]["From"];
-                $date = $xover[$article]["Date"];
-                $text = get_nntp_body($conf, $group, $article);
-                $quoted_text = str_replace("\n", "\n> ", $text);
-                $quoted_text = str_replace("<br />\n", "\n", $quoted_text);
-                $quote_head  = "On $date $from wrote:";
-                $text_to_quote = "$quote_head\n$quoted_text\n";
-		$text_to_quote .= "\n$message\n";	
-	} else {
-		$text_to_quote = "";
-		$noquote = 0;
-	}
-
-}
-
-if ($type == 2) $text_to_quote = "";
-
-if (($type == 1) or ($type == 2))
-{	
-	$sender = get_sender($conf);
-      	if ($sender)
-	{
-		echo "<div class=\"postheaders\">
-	<div class=\"header\">Sender</div>
-        <div class=\"value\">$sender</div>
-</div>";
-	}
-
-	if ((isset($subject)) and (!preg_match("/^RE: /i", $subject))) $subject = "Re: $subject";
-
-	echo "
-<div class=\"postheaders\">
-	<div class=\"header\">Group</div>
-	<div class=\"value\">$group</div>
-</div>";
-
-	if (isset($subject)) echo "
-<div class=\"postheaders\">
-        <div class=\"header\">Subject</div>
-        <div class=\"value\">$subject</div>
-</div>
-";
-	if (!isset($subject))
-	{
-    		echo "
-<fieldset>
-    <legend>Subject</legend>
-    <div class=\"postingident\"><input style=\"width: 95%;\" type=\"text\" name=\"subject\" value=\"my subject\"></div>
- </fieldset>\n";
-
-	}
-
-
-	if (!$sender)
-	{
-		echo "
-<fieldset>
-    <legend>Posting identity</legend>
-    <div class=\"postingident\"><input style=\"width: 25%;\" type=\"text\" name=\"nick\" value=\"$nick\"> <input style=\"width: 70%;\" type=\"text\" name=\"email\" value=\"$email\"></div>
- </fieldset>\n";
-
-
-	}
-
-	echo "
-<textarea name=\"message\">
-$text_to_quote
-</textarea>
-</form></div>\n";
-
-	
-}
+if ($type == 1) plot_reply_form($conf, $type, $newsgroup, $article, $thread, $noquote, $subject, $nick, $email, $message);
+if ($type == 2) plot_newmessage_form($conf, $type, $newsgroup, $thread, $article, $subject, $nick, $email, $noquote, $message);
 
 print_html_tail();
 
@@ -249,22 +148,23 @@ function post_reply($conf, $newsgroup, $thread, $article, $message, $subject, $n
 
 	$references = $xover[$article]["References"] . " " . $xover[$article]["Mid"];
 	$date  = date("r");
-	$mail  = str_replace("&gt;", ">", $email);
-	$mail  = str_replace("&lt;", "z", $mail);
-	$sender =  trim($nick) . " " . trim($mail);
+        $email = str_replace(">", "", $email);
+        $email = str_replace("<", "", $email);  
+        $email = str_replace("\"", "", $email);
+        $sender = "$nick <$email>";
 	$destination_groups = nntp_get_header($conf, $conf["active"][$newsgroup], $article, "Followup-To");
 	if (!$destination_groups) $destination_groups = nntp_get_header($conf, $conf["active"][$newsgroup], $article, "Newsgroups");
-	
+
 	$mexbody = explode("\n", $message);
+
+	$usenet_body = array();	
 
 	foreach($mexbody as $mexline)
 	{
-		$mexline = "";
 		$mexline = rtrim($mexline);
 		if (preg_match("/^\./", $mexline)) $usenet_body[] = " $mexline\r\n";
 		else $usenet_body[] = "$mexline\r\n"; 
 	}
-
 
 ////////////////////////////////////////
 
@@ -282,7 +182,7 @@ function post_reply($conf, $newsgroup, $thread, $article, $message, $subject, $n
 	fputs($fh, "From: $sender\r\n");
 	fputs($fh, "Newsgroups: $destination_groups\r\n");
 	fputs($fh, "Date: $date\r\n");
-	fputs($fh, "Subject: rrrrr\r\n");
+	fputs($fh, "Subject: $subject\r\n");
 	fputs($fh, "References: $references\n");
 	fputs($fh, "User-Agent: AWN v. 0.1 (https://github.com/Aioe/AWN)\r\n");
 	fputs($fh, "\r\n"); // End of headers
@@ -373,5 +273,169 @@ function post_new_message($conf, $group, $message, $subject, $nick, $email)
 	return TRUE;
 
 }
+
+function plot_reply_form($conf, $type, $newsgroup, $article, $thread, $noquote, $subject, $nick, $email, $message)
+{
+ 	echo "<form action=\"post.php\" method=\"post\">";
+        if ($article > 0) echo "<input type=\"hidden\" name=\"art\" value=\"$article\">";
+        if ($thread  > 0) echo "<input type=\"hidden\" name=\"thread\" value=\"$thread\">";
+        echo "
+<input type=\"hidden\" name=\"group\" value=\"$newsgroup\">
+<input type=\"hidden\" name=\"type\" value=\"$type\">
+";
+        post_toolbar($conf, $type, $newsgroup, $thread, $article, $noquote);
+        echo "<div class=\"article\">\n";
+        $group = $conf["active"][$newsgroup];
+	$xover = nntp_xover($conf, $group);
+        $subject = $xover[$article]["Subject"];
+        $from = $xover[$article]["From"];
+        $date = $xover[$article]["Date"];
+        if ($noquote == 0)
+        {
+                $text_to_quote = quote_text($conf, $xover, $group, $article);
+        } else if ($noquote == 1) $text_to_quote = "";
+        else if ($noquote == 2) {
+		$text_to_quote = quote_text($conf, $xover, $group, $article);
+                $text_to_quote .= "\n$message\n";       
+        } else {
+                $text_to_quote = "";
+                $noquote = 0;
+        }
+	$sender = get_sender($conf);
+        if ($sender)
+        {
+                echo "<div class=\"postheaders\">
+        <div class=\"header\">Sender</div>
+        <div class=\"value\">$sender</div>
+</div>";
+        }
+
+        if ((isset($subject)) and (!preg_match("/^RE: /i", $subject))) $subject = "Re: $subject";
+
+        echo "
+<div class=\"postheaders\">
+        <div class=\"header\">Group</div>
+        <div class=\"value\">$group</div>
+</div>";
+
+        if (isset($subject)) echo "
+<div class=\"postheaders\">
+        <div class=\"header\">Subject</div>
+        <div class=\"value\">$subject</div>
+</div>
+";
+        if (!isset($subject))
+        {
+                echo "
+<fieldset>
+    <legend>Subject</legend>
+    <div class=\"postingident\"><input style=\"width: 95%;\" type=\"text\" name=\"subject\" value=\"my subject\"></div>
+ </fieldset>\n";
+
+        }
+
+        if (!$sender)
+        {
+                echo "
+<fieldset>
+    <legend>Posting identity</legend>
+    <div class=\"postingident\"><input style=\"width: 25%;\" type=\"text\" name=\"nick\" value=\"$nick\"> <input style=\"width: 70%;\" type=\"text\" name=\"email\" value=\"$email\"></div>
+ </fieldset>\n";
+
+
+        }
+
+        echo "
+<textarea name=\"message\">
+$text_to_quote
+</textarea>
+</form></div>\n";
+
+}
+
+function plot_newmessage_form($conf, $type, $newsgroup, $thread, $article, $subject, $nick, $email, $noquote, $message)
+{
+	echo "<form action=\"post.php\" method=\"post\">";
+        if ($article > 0) echo "<input type=\"hidden\" name=\"art\" value=\"$article\">";
+        if ($thread  > 0) echo "<input type=\"hidden\" name=\"thread\" value=\"$thread\">";
+        echo "
+<input type=\"hidden\" name=\"group\" value=\"$newsgroup\">
+<input type=\"hidden\" name=\"type\" value=\"$type\">
+";
+        post_toolbar($conf, $type, $newsgroup, $thread, $article, $noquote);
+        echo "<div class=\"article\">\n";
+        $group = $conf["active"][$newsgroup];
+	$text_to_quote = "";
+	$sender = get_sender($conf);
+        if ($sender)
+        {
+                echo "<div class=\"postheaders\">
+        <div class=\"header\">Sender</div>
+        <div class=\"value\">$sender</div>
+</div>";
+        }
+
+        if ((isset($subject)) and (!preg_match("/^RE: /i", $subject))) $subject = "Re: $subject";
+
+        echo "
+<div class=\"postheaders\">
+        <div class=\"header\">Group</div>
+        <div class=\"value\">$group</div>
+</div>";
+
+        if (isset($subject)) echo "
+<div class=\"postheaders\">
+        <div class=\"header\">Subject</div>
+        <div class=\"value\">$subject</div>
+</div>
+";
+        if (!isset($subject))
+        {
+                echo "
+<fieldset>
+    <legend>Subject</legend>
+    <div class=\"postingident\"><input style=\"width: 95%;\" type=\"text\" name=\"subject\" value=\"my subject\"></div>
+ </fieldset>\n";
+
+        }
+
+        if (!$sender)
+        {
+                echo "
+<fieldset>
+    <legend>Posting identity</legend>
+    <div class=\"postingident\"><input style=\"width: 25%;\" type=\"text\" name=\"nick\" value=\"$nick\"> <input style=\"width: 70%;\" type=\"text\" name=\"email\" value=\"$email\"></div>
+ </fieldset>\n";
+
+
+        }
+
+        echo "
+<textarea name=\"message\">
+$text_to_quote
+</textarea>
+</form></div>\n";
+
+}
+
+function quote_text($conf, $xover, $group, $article)
+{
+	$from = $xover[$article]["From"];
+        $date = $xover[$article]["Date"];
+	$text = get_nntp_body($conf, $group, $article);
+
+	$lines = explode("\n", $text);
+	foreach($lines as $line)
+	{
+	        $quoted_text .= "> $line\n";
+	}
+
+	$quoted_text = str_replace("<br />", "", $quoted_text);
+        $quote_head  = "On $date $from wrote:";
+        $text_to_quote = "$quote_head\n$quoted_text\n";
+
+	return $text_to_quote;
+}
+
 ?>
 
