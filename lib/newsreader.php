@@ -32,7 +32,7 @@ if ($newsgroup)
 	if (($newsgroup >= $groupcount) or ($newsgroup == 0)) show_error_string("Parameter 'newsgroup' has an invalid value '<i>$newsgroup</i>', aborting", 1);
 } 
 
-print_html_head();
+print_html_head($conf);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -70,7 +70,7 @@ if ($screen == "threadlist")
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-print_html_tail();
+print_html_tail($conf);
 
 /////////////////////////////////////////////////////////////////
 

@@ -1,6 +1,7 @@
 <?php
 
 $conf["spooldir"] = "/var/www/html/spool";
+$conf["etcdir"]	= "/var/www/html/test/etc/";
 $conf["home"]   = "http://5.9.252.135";
 $conf["base"]   = "/test/";
 $conf["start"]  = "-500";
