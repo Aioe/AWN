@@ -123,6 +123,9 @@ function plot_message($xover, $screen, $group, $thread, $article, $config)
         $mid = $xover[$article]["Mid"];
         $from = $xover[$article]["From"];
         $date = $xover[$article]["Date"];
+        $old_time = strtotime($date);
+        $date = date(DATE_RFC822, $old_time);
+
         $from = htmlentities($from);
         $subject = $xover[$article]["Subject"];
         $ng = $xover[$article]["Group"];
