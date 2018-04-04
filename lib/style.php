@@ -260,7 +260,6 @@ function clean_body_line($line, $conf, $group, $article)
 	if (!isset($output[$leng])) return "";
 
        	if ($output[$leng] == "=") $nobreak = 1;
-       	$output = str_replace("ù", "&gt;", $output);
 	$output = quoted_printable_decode($output); 
 
 	$charset = "ISO8859-15"; // Default

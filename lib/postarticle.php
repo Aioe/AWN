@@ -49,9 +49,6 @@ $xover = build_dep($xover);
 if (($thread  > 0) and (!check_article_exist($xover, $thread))) show_error_string("Parameter 'thread' has an invalid value of '<i>$thread</i>'", 1);
 if (($article > 0) and (!check_article_exist($xover, $article))) show_error_string("Parameter 'art' has an invalid value of '<i>$article</i>'", 1);
 
-
-if ($article != 0) 
-
 $send 		= GET_header("x");
 
 if ($type == 0) fatal_error("type", $type);
@@ -92,13 +89,11 @@ if ($type == 2) // New message
 	if ($send > 0)
 	{
 		if (strlen($message) > 0) 
-		{	$output = post_new_message($conf, $conf["active"][$newsgroup], $message, $subject, $nick, $email);
-			if ($output == TRUE)
-			{
-				check_nntp($conf);
-				$url = $conf["home"] . $conf["base"] . "index.php?screen=threadlist&group=$newsgroup";
-				header("Location: $url");
-			}		
+		{
+			$output = post_new_message($conf, $conf["active"][$newsgroup], $message, $subject, $nick, $email);
+			check_nntp($conf);
+			$url = $conf["home"] . $conf["base"] . "index.php?screen=threadlist&group=$newsgroup";
+			header("Location: $url");
 		}
                 //////////////////////////////////////////
 	}
@@ -117,7 +112,7 @@ if ($type == 1)
 
 if ($type == 2) 
 {
-        if (!isset($subject)) $subject = "";
+	if (!isset($subject)) $subject = "";
         if (!isset($message)) $message = "";
 	plot_newmessage_form($conf, $type, $newsgroup, $thread, $article, $subject, $nick, $email, $noquote, $message);
 }
@@ -218,6 +213,7 @@ function post_reply($conf, $newsgroup, $thread, $article, $message, $subject, $n
 	fputs($fh, "Subject: $subject\r\n");
 	fputs($fh, "References: $references\n");
 	fputs($fh, "User-Agent: AWN v. 0.1 (https://github.com/Aioe/AWN)\r\n");
+	fputs($fh, "Content-Type: text/plain; charset=UTF-8\r\n");
 	fputs($fh, "\r\n"); // End of headers
 
 	foreach($usenet_body as $mexline) fputs($fh, $mexline); // body
@@ -261,6 +257,7 @@ function post_new_message($conf, $group, $message, $subject, $nick, $email)
 	fputs($fh, "From: $sender\r\n");
 	fputs($fh, "Subject: $subject\r\n");
 	fputs($fh, "Newsgroups: $group\r\n");
+	fputs($fh, "Content-Type: text/plain; charset=UTF-8\r\n");
 	fputs($fh, "\r\n");
 
 	$body = explode("\n", $message);
@@ -387,22 +384,19 @@ function plot_newmessage_form($conf, $type, $newsgroup, $thread, $article, $subj
 </div>";
         }
 
-        if ((isset($subject)) and (!preg_match("/^RE: /i", $subject))) $subject = "Re: $subject";
-
         echo "
 <div class=\"postheaders\">
         <div class=\"header\">Group</div>
         <div class=\"value\">$group</div>
 </div>";
 
-        if (isset($subject)) echo "
+        if (!empty($subject)) echo "
 <div class=\"postheaders\">
         <div class=\"header\">Subject</div>
         <div class=\"value\">$subject</div>
 </div>
 ";
-        if (!isset($subject))
-        {
+        else {
                 echo "
 <fieldset>
     <legend>Subject</legend>
