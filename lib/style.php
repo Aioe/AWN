@@ -260,8 +260,9 @@ function clean_body_line($line)
 	if (!isset($output[$leng])) return "";
 
        	if ($output[$leng] == "=") $nobreak = 1;
-       	$output = quoted_printable_decode($output);
-       	$output = htmlentities($output, ENT_SUBSTITUTE);
+       	$output = str_replace("ù", "&gt;", $output);
+	$output = quoted_printable_decode($output); 
+	$output = htmlentities($output, ENT_SUBSTITUTE, "ISO8859-15");
 	if ($nobreak == 0) $output .= "<br />\n";
 	return $output;
 }
