@@ -106,10 +106,11 @@ function set_next_thread($xover, $group, $thread)
 
 	foreach($xover as $ordinal => $array)
 	{
-		if (isset($xover[$ordinal]["References"]))
+		if ((isset($xover[$ordinal]["References"])) and (empty($xover[$ordinal]["References"])))
 		{
 			$records = $xover[$ordinal]["followup"];
 			$localmax = 0;
+			if (count($records) == 0) $records[] = $ordinal;
 			foreach($records as $second)
 			{
 				$oldtime = $xover[$second]["Time"];
