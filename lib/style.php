@@ -5,7 +5,6 @@ function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $a
         plot_toolbar($xover, $conf, $screen, $newsgroup, $thread, $article);
         echo "<div class=\"titolo\">" . $conf["active"][$newsgroup] . "</div>";
 
-
         $container = array();
 
         foreach ($xover as $start => $array)

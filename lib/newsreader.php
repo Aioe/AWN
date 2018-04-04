@@ -5,6 +5,8 @@ include("style.php");
 include("backend.php");
 include("toolbar.php");
 
+date_default_timezone_set('Europe/Rome');
+
 ///////////////////////////////////////////////////////////////////////////
 
 $start 		= $conf["start"];

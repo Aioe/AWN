@@ -6,6 +6,8 @@ include("backend.php");
 include("toolbar.php");
 include("newsagent.php");
 
+date_default_timezone_set('Europe/Rome');
+
 ///////////////////////////////////////////////////////////////////////////
 
 if (isset($_POST["message"])) 	$message = $_POST["message"];
