@@ -108,9 +108,19 @@ if ($type == 2) // New message
 
 print_html_head();
 
-if ($type == 1) plot_reply_form($conf, $type, $newsgroup, $article, $thread, $noquote, $subject, $nick, $email, $message);
-if ($type == 2) plot_newmessage_form($conf, $type, $newsgroup, $thread, $article, $subject, $nick, $email, $noquote, $message);
+if ($type == 1) 
+{
+	if (!isset($subject)) $subject = "";
+	if (!isset($message)) $message = "";
+	plot_reply_form($conf, $type, $newsgroup, $article, $thread, $noquote, $subject, $nick, $email, $message);
+}
 
+if ($type == 2) 
+{
+        if (!isset($subject)) $subject = "";
+        if (!isset($message)) $message = "";
+	plot_newmessage_form($conf, $type, $newsgroup, $thread, $article, $subject, $nick, $email, $noquote, $message);
+}
 print_html_tail();
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -450,6 +460,7 @@ function quote_text($conf, $xover, $group, $article)
         $date = $xover[$article]["Date"];
 	$text = get_nntp_body($conf, $group, $article);
 
+	$quoted_text = "";
 	$lines = explode("\n", $text);
 	foreach($lines as $line)
 	{

@@ -141,6 +141,7 @@ a {
 
 .testo
 {
+	unicode-bidi: embed;
 	font-family: monospace;
 	line-height: 150%;
         overflow:  auto;
