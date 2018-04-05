@@ -1,6 +1,6 @@
 <?php
 
-$conf["spooldir"] = "/var/www/html/spool";
+$conf["spooldir"] = "/var/www/html/test/spool";
 $conf["etcdir"]	= "/var/www/html/test/etc/";
 $conf["home"]   = "http://5.9.252.135";
 $conf["base"]   = "/test/";
@@ -15,7 +15,8 @@ $conf["active"] = array(
                 "it.discussioni.auto",
 		"it.comp.console",
 		"it.hobby.fai-da-te",
-		"it.hobby.viaggi"
+		"it.hobby.viaggi",
+		"it.cultura.linguistica.italiano"
                 );
 
 $conf["colors"]["background"] = array(

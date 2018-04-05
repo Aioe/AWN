@@ -23,7 +23,8 @@ function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $a
                         $replies = $xover[$start]["nr_followup"];
 
                         $nick = preg_replace("/(\<.+\>)/", "", $from);
-
+			$nickb = clean_header($nick, $conf, $newsgroup, $start);
+			$subjectb = clean_header($subject, $conf, $newsgroup, $start);			
 
                         $color = "";
                         $bgcolor = "";
@@ -45,8 +46,8 @@ function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $a
                                 $container[$diff] = "
 <a href=\"$url\">
 <div style=\"$color border-left: 5px solid $border;\" class=\"main3d\">
-                <div class=\"description\">$subject ($replies)</div>
-                <div class=\"addenda\">by <b>$nick</b> on $date</div>
+                <div class=\"description\">$subjectb ($replies)</div>
+                <div class=\"addenda\">by <b>$nickb</b> on $date</div>
 </div></a>
 ";
                         } else {
@@ -69,13 +70,15 @@ function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $a
 
 }
 
-function build_thread($xover, $screen, $thread, $article, $group, $conf)
+function build_thread($xover, $screen, $thread, $article, $group, $conf, $newsgroup)
 {
         plot_toolbar($xover, $conf, $screen, $group, $thread, $article);
         $messages = $xover[$thread]["followup"];        
         $subject = $xover[$thread]["Subject"];
 
-        echo "<div class=\"titolo\">$subject</div>";
+	$subjectb = clean_header($subject, $conf, $group, $thread);
+
+        echo "<div class=\"titolo\">$subjectb</div>";
 
 // plot_tree($xover, $screen, $group, $thread, $article, $conf, $post)
 
@@ -118,20 +121,22 @@ function plot_message($xover, $screen, $group, $thread, $article, $config)
 {
         plot_toolbar($xover, $config, $screen, $group, $thread, $article);
 
-	$body = get_nntp_body($config, $config["active"][$group], $article);
+	$body = get_nntp_body($config, $config["active"][$group], $article, 1);
 
         $mid = $xover[$article]["Mid"];
         $from = $xover[$article]["From"];
         $date = $xover[$article]["Date"];
         $old_time = strtotime($date);
         $date = date(DATE_RFC822, $old_time);
-
-        $from = htmlentities($from);
         $subject = $xover[$article]["Subject"];
+
+	$from 		= clean_header($from, $config, $group, $article);
+	$subject	= clean_header($subject, $config, $group, $article);
+
+
         $ng = $xover[$article]["Group"];
-        $nick = preg_replace("/(\<.+\>)/", "", $from);
         echo "<div class=\"corpo\">
-<div class=\"intestazioni\"><b>From:</b>       $nick</div>
+<div class=\"intestazioni\"><b>From:</b>       $from</div>
 <div class=\"intestazioni\"><b>Newsgroup:</b>  $ng</div>
 <div class=\"intestazioni\"><b>Subject:</b>    $subject</div>
 <div class=\"intestazioni\"><b>Date:</b>       $date</div>
@@ -140,6 +145,41 @@ function plot_message($xover, $screen, $group, $thread, $article, $config)
 </div>
 ";
 
+}
+
+function clean_header($value, $conf, $newsgroup, $article)
+{
+	$value = trim($value);
+	$charset = "ISO8859-15"; // Default
+        $group = $conf["active"][$newsgroup];
+        $ct = nntp_get_header($conf, $group, $article, "Content-Type", 0);
+        $ct = str_replace("\"", "", $ct);
+        if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match)) $charset = trim($match[1]);
+        $charset = strtoupper($charset);
+
+	if ((!strpos($value, "?Q?")) and (!strpos($value, "?B?")))
+	{
+ 		return htmlentities($value, ENT_SUBSTITUTE, $charset);
+	}
+
+	preg_match("/(.+)\?[QB]\?(.+)/", $value, $match);
+	$first 	= $match[1];
+	$last	= $match[2];	
+
+	$elems = explode(" ", $first);
+
+	if (count($elems) < 2) $charsetb = $first;
+	else {
+		$n = count($elems);
+		$n--;
+		$charsetb = $elems[$n];
+		for($x = 0; $x < $n; $x++) $first_string .= " $elems[$x] ";
+	}
+
+	$fse = htmlentities($first_string, ENT_SUBSTITUTE, $charset);
+	$sse = htmlentities($last, ENT_SUBSTITUTE, $charsetb);
+	$output = $fse . $sse;
+	return "$output";
 }
 
 function set_url($screen, $group, $thread, $article )
@@ -212,6 +252,8 @@ function plot_tree($xover, $screen, $group, $thread, $article, $conf, $post, $is
         $date = date("j/m/y G:i", $old_time); 
         $nick = preg_replace("/(\<.+\>)/", "", $from);
 
+	$fromb = clean_header($nick, $conf, $group, $article);
+
         $bgcolor = "";
 
         $time = $xover[$article]["Time"];
@@ -232,7 +274,7 @@ function plot_tree($xover, $screen, $group, $thread, $article, $conf, $post, $is
         echo "<ul style=\"$style\" class=\"lista\">";
         echo "
 <li style=\"background-color: $bgcolor;\">
-<div class=\"tree\" style=\"border-left: 5px solid $border;\"><a href=\"$url\"><b>$nick</b><br />$date</a></div>";
+<div class=\"tree\" style=\"border-left: 5px solid $border;\"><a href=\"$url\"><b>$fromb</b><br />$date</a></div>";
 
 }
 
@@ -279,16 +321,18 @@ function clean_body_line($line, $conf, $group, $article)
 
 function show_error_string($error, $html)
 { 
-	if ($html == 1)	print_html_head();
-        echo 
-                "<br />  
+	if ($html == 1)	
+	{
+		include("config.php");
+		print_html_head($conf);
+	}
+        echo "\n<br />  
                 <div style=\"max-width: 80%; width: 80%; border: 1px solid #f99; margin-left: 10%; padding-left: 1%; padding-right: 1%; padding-top: 1%;\">
                 <h3 style=\"text-align: center;\">Unrecoverable error</h3><hr />
                 <p style=\"text-align: justify; font-size: larger;\">$error</p>
-                </div>
+                </div>";
 
-";
-	print_html_tail();
+	if ($html == 1) print_html_tail($conf);
 	exit(0);
 
 }
@@ -311,8 +355,8 @@ function print_html_head($conf)
 function print_html_tail($conf)
 {
 	$file = $conf["etcdir"] . "/" . "tail.inc.php";
+	echo "</div>";
         include($file);
-        echo "</div>";
 	return TRUE;
 }
 

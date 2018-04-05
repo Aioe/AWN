@@ -47,7 +47,7 @@ function nntp_xover($config, $group)
         return $xover;
 }
 
-function get_nntp_body($config, $group, $article)
+function get_nntp_body($config, $group, $article, $html)
 {
 
 	$file = $config["spooldir"] . "/data/$group/$article";
@@ -61,6 +61,7 @@ function get_nntp_body($config, $group, $article)
 	$headers = 1;
 	$quote = 0;
 	$swit = 0;
+	$signature = 0;
 
 	foreach($art as $line)
 	{
@@ -68,20 +69,23 @@ function get_nntp_body($config, $group, $article)
 		if ($headers == 0)
 		{
 			$clean = clean_body_line($line, $config, $group, $article);
-			if (($quote == 1) and (!preg_match("/^&gt;/i", $clean)))
+			if ($html == 1)
 			{
-				$quote = 0;
-				$clean = "</div>$clean<br />\n";
-			}
-			if ((preg_match("/^&gt\;/i", $clean ))  and ($quote == 0))
-			{
-				if ($swit > 0) $clean = "<br><div class=\"quote\">$clean";
-				else $clean = "<div class=\"quote\">$clean";
-				$quote = 1;
-				$swit++;
-			}
-		
-			$body .= $clean;
+				if (($quote == 1) and (!preg_match("/^&gt;/i", $clean)))
+				{
+					$quote = 0;
+					$clean = "</div>$clean<br />\n";
+				}
+				if ((preg_match("/^&gt\;/i", $clean ))  and ($quote == 0))
+				{
+					if ($swit > 0) $clean = "<br><div class=\"quote\">$clean";
+					else $clean = "<div class=\"quote\">$clean";
+					$quote = 1;
+					$swit++;
+				}		
+			} else $clean = "$clean\n";
+			if (preg_match("/^\-\-/", $clean)) $signature = 1;
+			if (($signature == 0) or (($signature == 1) and ($html == 1))) $body .= $clean;
 		}
 	}
 
