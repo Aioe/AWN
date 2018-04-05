@@ -268,10 +268,12 @@ function clean_body_line($line, $conf, $group, $article)
 
 	$ct = nntp_get_header($conf, $group, $article, "Content-Type", 0);
 
-	if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match))	$charset = trim($match[1]);
+	$ct = str_replace("\"", "", $ct);
+	if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match)) $charset = trim($match[1]);
+
 	$charset = strtoupper($charset);
 	$output = htmlentities($output, ENT_SUBSTITUTE, $charset);
-	if ($nobreak == 0) $output .= "<br />\n";
+	if ($nobreak == 0) $output .= "<br />";
 	return $output;
 }
 

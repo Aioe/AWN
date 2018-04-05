@@ -163,13 +163,34 @@ function nntp_get_header($conf, $group, $article, $header, $html)
         }
 
         $headers = 1;
+	$multilineheader = 0;
+	$multiline = "";
+
         foreach($lines as $line)
         {
                 if ($line[0] == "\r") $headers = 0;
+		if ($multilineheader == 1)
+		{
+			if (preg_match("/charset/i", $line))
+			{
+				$multiline .= $line;
+				return rtrim($multiline);
+			} else $multiline .= $line;
+			continue;
+		}
                 if ($headers == 1)
                 {
                         $elems = explode(": ", $line, 2);
-                        if (preg_match("/$header/i", $elems[0])) return rtrim($elems[1]);
+                        if (preg_match("/$header/i", $elems[0])) 
+			{
+				if ($header != "Content-Type") return rtrim($elems[1]);
+				else {
+					if (preg_match("/charset/i", $elems[1])) return rtrim($elems[1]);
+					$multiline .= $elems[1];
+					$multilineheader = 1;
+					continue;
+				}
+			}
                 }
         }
 
