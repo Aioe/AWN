@@ -1,79 +1,90 @@
 <?php
 
+function plot_toolbar_groups($conf, $group, $thread, $article)
+{
+	plot_single_icon($conf, "menu", $conf["home"]);		// 1
+	plot_single_icon($conf, "listgroups", "");		// 2
+        plot_single_icon($conf, "listhreads", "");		// 3
+        plot_single_icon($conf, "tree", "");			// 4
+        plot_single_icon($conf, "left", "");			// 5
+        plot_single_icon($conf, "right", "");			// 6
+}
+
+
+function plot_toolbar_threadlist($conf, $group, $thread, $article)
+{ 
+	plot_single_icon($conf, "menu", $conf["home"]);					// 1
+        $next = $group + 1;
+        if ($next > count($conf["active"]) -1) $next = 0;
+        $prev = $group - 1;
+        plot_single_icon($conf, "listgroups", $conf["base"]);				// 2
+        plot_single_icon($conf, "newarticle", "post.php?type=2&amp;group=$group");	// 3
+        plot_single_icon($conf, "tree", "");						// 4
+
+        $urlp = set_url("threadlist", $prev, $thread, $article );
+        $urln = set_url("threadlist", $next, $thread, $article );
+
+        if ($prev > 0) plot_single_icon($conf, "left", "$urlp");			// 5
+        else plot_single_icon($conf, "left", "");
+        if ($next > 0) plot_single_icon($conf, "right", "$urln");			// 6
+        else plot_single_icon($conf, "right", "");
+}
+
+function plot_toolbar_tree($conf, $group, $thread, $article)
+{
+	plot_single_icon($conf, "menu", $conf["home"]);					// 1
+        $prev = $t3d[0];
+        $next = $t3d[1];
+        plot_single_icon($conf, "listgroups", $conf["base"]);				// 2
+        $url = set_url("threadlist", $group, $thread, $article );
+
+        plot_single_icon($conf, "listhreads", $url);					// 3
+        plot_single_icon($conf, "tree", "");						// 4
+
+        $urlp = set_url("tree", $group, $prev, $article );
+        $urln = set_url("tree", $group, $next, $article );
+
+        if ($prev > 0) plot_single_icon($conf, "left", $urlp);				// 5
+        else plot_single_icon($conf, "left", "");
+        if ($next > 0) plot_single_icon($conf, "right", $urln);				// 6
+        else plot_single_icon($conf, "right", "");
+}
+
+function plot_toolbar_messages($conf, $group, $thread, $article)
+{
+	plot_single_icon($conf, "reply", "post.php?type=1&amp;group=$group&amp;thread=$thread&amp;art=$article"); 	// 1
+        $xover = set_next_article($xover, $group, $thread, $article);
+        if (isset($xover[$article]["thread"]["prev"])) $prev = $xover[$article]["thread"]["prev"];
+        else $prev = "";
+        if (isset($xover[$article]["thread"]["next"])) $next = $xover[$article]["thread"]["next"];
+        else $next = "";
+
+        $url = set_url("threadlist", $group, $thread, $article );
+        plot_single_icon($conf, "listgroups", $conf["base"]);								// 2
+        plot_single_icon($conf, "listhreads", $url);									// 3
+
+        $url = set_url("tree", $group, $thread, $article );
+
+        plot_single_icon($conf, "tree", $url);										// 4
+
+        $urlp = set_url("messages", $group, $thread, $prev );
+        $urln = set_url("messages", $group, $thread, $next );
+
+        if ($prev > 0 ) plot_single_icon($conf, "left", $urlp);								// 5
+        else plot_single_icon($conf, "left", "");
+        if ($next > 0) plot_single_icon($conf, "right", $urln);								// 6
+        else plot_single_icon($conf, "right", "");
+}
+
+
 function plot_toolbar($xover, $conf, $screen, $group, $thread, $article)
 {
         echo "<div class=\"top\">\n";
 
-	if ($screen == "messages")
-	{
-		plot_single_icon($conf, "reply", "post.php?type=1&amp;group=$group&amp;thread=$thread&amp;art=$article");
-	} else plot_single_icon($conf, "menu", $conf["home"]);
-
-
-        if ($screen == "groups") // lista dei gruppi
-        {
-                plot_single_icon($conf, "listgroups", "");
-                plot_single_icon($conf, "listhreads", "");
-                plot_single_icon($conf, "tree", "");
-                plot_single_icon($conf, "left", "");
-                plot_single_icon($conf, "right", "");
-        } elseif ($screen == "threadlist") {   //lista dei thread
-                $next = $group + 1;
-                if ($next > count($conf["active"]) -1) $next = 0;
-                $prev = $group - 1;
-                plot_single_icon($conf, "listgroups", $conf["base"]);
-                plot_single_icon($conf, "newarticle", "post.php?type=2&amp;group=$group");
-                plot_single_icon($conf, "tree", "");
-
-		$urlp = set_url("threadlist", $prev, $thread, $article );
-		$urln = set_url("threadlist", $next, $thread, $article );
-
-                if ($prev > 0) plot_single_icon($conf, "left", "$urlp");
-                else plot_single_icon($conf, "left", "");
-                if ($next > 0) plot_single_icon($conf, "right", "$urln");
-                else plot_single_icon($conf, "right", "");
-        } elseif ($screen == "tree") {  // messaggi nel thared
-                $t3d = set_next_thread($xover, $group, $thread);
-                $prev = $t3d[0];
-                $next = $t3d[1];
-                plot_single_icon($conf, "listgroups", $conf["base"]);
-		$url = set_url("threadlist", $group, $thread, $article );
-
-                plot_single_icon($conf, "listhreads", $url);
-                plot_single_icon($conf, "tree", "");
-
-		$urlp = set_url("tree", $group, $prev, $article );
-                $urln = set_url("tree", $group, $next, $article );
-
-                if ($prev > 0) plot_single_icon($conf, "left", $urlp);
-                else plot_single_icon($conf, "left", "");
-                if ($next > 0) plot_single_icon($conf, "right", $urln);
-                else plot_single_icon($conf, "right", "");
-
-        } elseif ($screen == "messages") {   // messaggio
-                $xover = set_next_article($xover, $group, $thread, $article);
-                if (isset($xover[$article]["thread"]["prev"])) $prev = $xover[$article]["thread"]["prev"];
-		else $prev = "";
-                if (isset($xover[$article]["thread"]["next"])) $next = $xover[$article]["thread"]["next"];
-		else $next = "";
-
-		$url = set_url("threadlist", $group, $thread, $article );
-
-                plot_single_icon($conf, "listgroups", $conf["base"]);
-                plot_single_icon($conf, "listhreads", $url);
-
-		$url = set_url("tree", $group, $thread, $article );
-
-                plot_single_icon($conf, "tree", $url);
-
-		$urlp = set_url("messages", $group, $thread, $prev );
-                $urln = set_url("messages", $group, $thread, $next );
-
-                if ($prev > 0 ) plot_single_icon($conf, "left", $urlp);
-                else plot_single_icon($conf, "left", "");
-                if ($next > 0) plot_single_icon($conf, "right", $urln);
-                else plot_single_icon($conf, "right", "");
-        }
+        if ($screen == "groups") plot_toolbar_groups($conf, $group, $thread, $article); 		// lista dei gruppi
+        elseif ($screen == "threadlist") plot_toolbar_threadlist($conf, $group, $thread, $article);   	//lista dei thread
+        elseif ($screen == "tree") plot_toolbar_tree($conf, $group, $thread, $article); 		// albero dei messaggi
+        elseif ($screen == "messages") plot_toolbar_messages($conf, $group, $thread, $article);		// messaggi
 
         echo "</div>\n";
         echo "<div class=\"endtoolbar\">&nbsp;</div>";
