@@ -30,9 +30,10 @@ function plot_toolbar_threadlist($conf, $group, $thread, $article)
         else plot_single_icon($conf, "right", "");
 }
 
-function plot_toolbar_tree($conf, $group, $thread, $article)
+function plot_toolbar_tree($conf, $xover, $group, $thread, $article)
 {
 	plot_single_icon($conf, "menu", $conf["home"]);					// 1
+	$t3d = set_next_thread($xover, $group, $thread);
         $prev = $t3d[0];
         $next = $t3d[1];
         plot_single_icon($conf, "listgroups", $conf["base"]);				// 2
@@ -50,7 +51,7 @@ function plot_toolbar_tree($conf, $group, $thread, $article)
         else plot_single_icon($conf, "right", "");
 }
 
-function plot_toolbar_messages($conf, $group, $thread, $article)
+function plot_toolbar_messages($conf, $xover, $group, $thread, $article)
 {
 	plot_single_icon($conf, "reply", "post.php?type=1&amp;group=$group&amp;thread=$thread&amp;art=$article"); 	// 1
         $xover = set_next_article($xover, $group, $thread, $article);
@@ -83,8 +84,8 @@ function plot_toolbar($xover, $conf, $screen, $group, $thread, $article)
 
         if ($screen == "groups") plot_toolbar_groups($conf, $group, $thread, $article); 		// lista dei gruppi
         elseif ($screen == "threadlist") plot_toolbar_threadlist($conf, $group, $thread, $article);   	//lista dei thread
-        elseif ($screen == "tree") plot_toolbar_tree($conf, $group, $thread, $article); 		// albero dei messaggi
-        elseif ($screen == "messages") plot_toolbar_messages($conf, $group, $thread, $article);		// messaggi
+        elseif ($screen == "tree") plot_toolbar_tree($conf, $xover, $group, $thread, $article); 		// albero dei messaggi
+        elseif ($screen == "messages") plot_toolbar_messages($conf, $xover, $group, $thread, $article);		// messaggi
 
         echo "</div>\n";
         echo "<div class=\"endtoolbar\">&nbsp;</div>";
