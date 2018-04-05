@@ -71,21 +71,15 @@ function get_nntp_body($config, $group, $article, $html)
 			$clean = clean_body_line($line, $config, $group, $article);
 			if ($html == 1)
 			{
-				if (($quote == 1) and (!preg_match("/^&gt;/i", $clean)))
-				{
-					$quote = 0;
-					$clean = "</div>$clean<br />\n";
-				}
-				if ((preg_match("/^&gt\;/i", $clean ))  and ($quote == 0))
-				{
-					if ($swit > 0) $clean = "<br><div class=\"quote\">$clean";
-					else $clean = "<div class=\"quote\">$clean";
-					$quote = 1;
-					$swit++;
-				}		
+				$levels = substr_count($clean, "&gt;");
+				if ($levels > $value) for ($value; $value < $levels; $value++) $clean = "<div class=\"quote\">$clean";
+				if ($levels < $value) for ($value; $value > $levels; $value--) $clean = "</div>";
+				for ($x = $value; $x > 0; $x--) $clean = preg_replace("/&gt;/", "", $clean);
+				$clean = preg_replace("/^<br \/>/", "", $clean); // qui va tolto l'apice per ottenere il formato continuo
+				$clean = str_replace("<div class=\"quote\"><br />", "<div class=\"quote\">", $clean);
 			} else $clean = "$clean\n";
 			if (preg_match("/^\-\-/", $clean)) $signature = 1;
-			if (($signature == 0) or (($signature == 1) and ($html == 1))) $body .= $clean;
+			if (($signature == 0) or (($signature == 1) and ($html == 1))) $body .= "$clean\n";
 		}
 	}
 

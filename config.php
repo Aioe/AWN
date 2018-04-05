@@ -16,7 +16,8 @@ $conf["active"] = array(
 		"it.comp.console",
 		"it.hobby.fai-da-te",
 		"it.hobby.viaggi",
-		"it.cultura.linguistica.italiano"
+		"it.cultura.linguistica.italiano",
+		"it.politica"
                 );
 
 $conf["colors"]["background"] = array(
