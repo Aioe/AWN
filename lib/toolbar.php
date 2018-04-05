@@ -40,7 +40,7 @@ function plot_toolbar_tree($conf, $xover, $group, $thread, $article)
         $url = set_url("threadlist", $group, $thread, $article );
 
         plot_single_icon($conf, "listhreads", $url);					// 3
-        plot_single_icon($conf, "tree", "");						// 4
+        plot_single_icon($conf, "articles", "?screen=messages&amp;group=$group&amp;thread=$thread&amp;art=$thread");						// 4
 
         $urlp = set_url("tree", $group, $prev, $article );
         $urln = set_url("tree", $group, $next, $article );
