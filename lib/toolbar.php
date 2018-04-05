@@ -13,7 +13,7 @@ function plot_toolbar_groups($conf, $group, $thread, $article)
 
 function plot_toolbar_threadlist($conf, $group, $thread, $article)
 { 
-	plot_single_icon($conf, "left", $conf["home"]);					// 1
+	plot_single_icon($conf, "quit", $conf["home"]);					// 1
         $next = $group + 1;
         if ($next > count($conf["active"]) -1) $next = 0;
         $prev = $group - 1;
@@ -32,7 +32,7 @@ function plot_toolbar_threadlist($conf, $group, $thread, $article)
 
 function plot_toolbar_tree($conf, $xover, $group, $thread, $article)
 {
-	plot_single_icon($conf, "menu", $conf["home"]);					// 1
+	plot_single_icon($conf, "quit", $conf["home"]);					// 1
 	$t3d = set_next_thread($xover, $group, $thread);
         $prev = $t3d[0];
         $next = $t3d[1];
@@ -53,7 +53,7 @@ function plot_toolbar_tree($conf, $xover, $group, $thread, $article)
 
 function plot_toolbar_messages($conf, $xover, $group, $thread, $article)
 {
-	plot_single_icon($conf, "left", "index.php?screen=threadlist&amp;group=$group&amp;thread=$thread&amp;art=$article"); 	// 1									// 1
+	plot_single_icon($conf, "quit", "index.php?screen=threadlist&amp;group=$group&amp;thread=$thread&amp;art=$article"); 	// 1									// 1
 	plot_single_icon($conf, "listgroups", $conf["base"]);									// 2
 	plot_single_icon($conf, "reply", "post.php?type=1&amp;group=$group&amp;thread=$thread&amp;art=$article"); 		// 3
         $xover = set_next_article($xover, $group, $thread, $article);
