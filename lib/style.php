@@ -157,6 +157,8 @@ function clean_header($value, $conf, $newsgroup, $article)
         if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match)) $charset = trim($match[1]);
         $charset = strtoupper($charset);
 
+// base64_decode
+
 	if ((!strpos($value, "?Q?")) and (!strpos($value, "?B?")))
 	{
 		if ($charset == "US-ASCII") $charset =  "ISO8859-15";
@@ -175,25 +177,38 @@ function clean_header($value, $conf, $newsgroup, $article)
  		return htmlentities($value, ENT_SUBSTITUTE, $charset);
 	}
 
-	preg_match("/(.+)\?[QB]\?(.+)/", $value, $match);
-	$first 	= $match[1];
-	$last	= $match[2];	
+	if (strpos($value, "?Q?"))
+	{
+		preg_match("/(.+)\?Q\?(.+)/", $value, $match);
+		$first 	= $match[1];
+		$last	= $match[2];	
 
-	$elems = explode(" ", $first);
+		$elems = explode(" ", $first);
 
-	if (count($elems) < 2) $charsetb = $first;
-	else {
-		$n = count($elems);
-		$n--;
-		$charsetb = $elems[$n];
-		for($x = 0; $x < $n; $x++) $first_string .= " $elems[$x] ";
+		if (count($elems) < 2) $charsetb = $first;
+		else {
+			$n = count($elems);
+			$n--;
+			$charsetb = $elems[$n];
+			for($x = 0; $x < $n; $x++) $first_string .= " $elems[$x] ";
+		}
+
+		$fse = htmlentities($first_string, ENT_SUBSTITUTE, $charset);
+		$sse = htmlentities($last, ENT_SUBSTITUTE, $charsetb);
+		$output = $fse . $sse;
+		return "$output";
 	}
 
-	$fse = htmlentities($first_string, ENT_SUBSTITUTE, $charset);
-	$sse = htmlentities($last, ENT_SUBSTITUTE, $charsetb);
-	$output = $fse . $sse;
-
-	return "$output";
+	if (strpos($value, "?B?"))
+	{
+		preg_match("/(.+)\?B\?(.+)/", $value, $match);
+		$charset = $match[1];
+		$charset = strtoupper($charset);
+		$string_raw = $match[2];
+		$string_decoded = base64_decode($string_raw);
+		$string = htmlentities($string_decoded, ENT_SUBSTITUTE, $charset);		
+		return "$string";
+	}
 }
 
 function set_url($screen, $group, $thread, $article )
