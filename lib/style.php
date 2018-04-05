@@ -159,6 +159,19 @@ function clean_header($value, $conf, $newsgroup, $article)
 
 	if ((!strpos($value, "?Q?")) and (!strpos($value, "?B?")))
 	{
+		if ($charset == "US-ASCII") $charset =  "ISO8859-15";
+		$gg = 0;
+		for ($x = 0; $x < strlen($value); $x++)
+		{
+			if (ord($value[$x]) > 150)
+			{
+				$gg = $x;
+				break;
+			}
+		}
+
+	//	$value[$gg] = ""; // PHP BUG
+
  		return htmlentities($value, ENT_SUBSTITUTE, $charset);
 	}
 
@@ -179,6 +192,7 @@ function clean_header($value, $conf, $newsgroup, $article)
 	$fse = htmlentities($first_string, ENT_SUBSTITUTE, $charset);
 	$sse = htmlentities($last, ENT_SUBSTITUTE, $charsetb);
 	$output = $fse . $sse;
+
 	return "$output";
 }
 
