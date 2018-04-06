@@ -52,6 +52,7 @@ function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $a
 ";
                         } else {
               			$url = set_url("messages", $newsgroup, $start, $start);
+				if ($bgcolor == 0) $bgcolor = "#fff";
 		                $container[$diff] = "
 <a href=\"$url\">
 <div style=\"$color background-color: $bgcolor;  border-left: 5px solid $border;\" class=\"main3d\">
@@ -292,6 +293,8 @@ function plot_tree($xover, $screen, $group, $thread, $article, $conf, $post, $is
         $colors = set_background_color($diff, $conf);
         $bgcolor = $colors[0];
         $border  = $colors[1];
+
+	if ($bgcolor == 0) $bgcolor = "#fff";
 
 	$url = set_url("messages", $group, $thread, $article );
 

@@ -41,7 +41,8 @@ if (($screen == "groups") or (strlen($screen) == 0))
 {
 	$screen = "groups";
 	plot_grouplist($conf, $screen, $newsgroup, $thread, $article );
-	return 0;
+	print_html_tail($conf);
+	return(0);
 } else $group = $conf["active"][$newsgroup];
 
 $xover = nntp_xover($conf, $group);
