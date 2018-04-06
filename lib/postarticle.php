@@ -360,7 +360,7 @@ function plot_reply_form($conf, $type, $newsgroup, $article, $thread, $noquote, 
 <textarea name=\"message\">
 $text_to_quote
 </textarea>
-</form></div>\n";
+</div></form>\n";
 
 }
 
@@ -422,7 +422,7 @@ function plot_newmessage_form($conf, $type, $newsgroup, $thread, $article, $subj
 <textarea name=\"message\">
 $text_to_quote
 </textarea>
-</form></div>\n";
+</div></form>\n";
 
 }
 
