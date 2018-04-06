@@ -72,8 +72,7 @@ function plot_toolbar_messages($conf, $xover, $group, $thread, $article)
         if ($prev > 0 ) plot_single_icon($conf, "left", $urlp, "Previous article");									// 5
         else plot_single_icon($conf, "left", "", "Previous article");
         if ($next > 0) plot_single_icon($conf, "right", $urln, "Next article");										// 6
-        else plot_single_icon($conf, "right", "", "Next article"
-);			
+        else plot_single_icon($conf, "right", "", "Next article");
 }
 
 
@@ -100,7 +99,7 @@ function plot_single_icon($conf, $icon, $url, $alt)
                 echo "<div class=\"toolbaricons\"><a href=\"" . $url . "\"><img alt=\"$alt\" src=\"$iconpath\"></a></div>\n";
 
         } else {
-                echo "<div class=\"toolbaricons\"><img style=\"opacity: 0.4;\" src=\"$iconpath\"></div>\n";
+                echo "<div class=\"toolbaricons\"><img alt=\"$alt\" style=\"opacity: 0.4;\" src=\"$iconpath\"></div>\n";
         }
 }
 

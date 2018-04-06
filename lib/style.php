@@ -23,8 +23,8 @@ function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $a
                         $replies = $xover[$start]["nr_followup"];
 
                         $nick = preg_replace("/(\<.+\>)/", "", $from);
-			$nickb = clean_header($nick, $conf, $newsgroup, $start);
-			$subjectb = clean_header($subject, $conf, $newsgroup, $start);			
+			$nick = clean_header($nick, $conf, $newsgroup, $start);
+			$subject = clean_header($subject, $conf, $newsgroup, $start);			
 
                         $color = "";
                         $bgcolor = "";
@@ -39,20 +39,21 @@ function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $a
                         $diff = time() - $time;
                         $colors = set_background_color($diff, $conf);
                         $border  = $colors[1];
-                
+
+			$color = "background-color: $colors[0];";                
                         if ($replies > 0)
                         {
 				$url = set_url("tree", $newsgroup, $start, "");
                                 $container[$diff] = "
 <a href=\"$url\">
 <div style=\"$color border-left: 5px solid $border;\" class=\"main3d\">
-                <div class=\"description\">$subjectb ($replies)</div>
-                <div class=\"addenda\">by <b>$nickb</b> on $date</div>
+                <div class=\"description\">$subject ($replies)</div>
+                <div class=\"addenda\">by <b>$nick</b> on $date</div>
 </div></a>
 ";
                         } else {
               			$url = set_url("messages", $newsgroup, $start, $start);
-				if ($bgcolor == 0) $bgcolor = "#fff";
+//				if ($bgcolor == 0) $bgcolor = "#fff";
 		                $container[$diff] = "
 <a href=\"$url\">
 <div style=\"$color background-color: $bgcolor;  border-left: 5px solid $border;\" class=\"main3d\">
@@ -158,25 +159,50 @@ function clean_header($value, $conf, $newsgroup, $article)
         if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match)) $charset = trim($match[1]);
         $charset = strtoupper($charset);
 
-// base64_decode
+// multiline
+	$num = substr_count($value, "?Q?");
+	if ($num > 1)
+	{
+		$lm = 0;
+		$pos = strpos($value, "?Q?");
+		for ($x = $pos; $x > -1; $x--) 
+		{
+			if ($value[$x] == " ") 
+			{
+				$lm = $x;
+				break;
+			}
+		} 
+
+		$leng = $pos - $lm;
+
+		$prima_parte = substr($value, 0, $lm);
+		$charset = substr($value, $lm, $leng);
+		$charsetm = strtoupper($charset);
+
+		$toremove = array("?Q?", $charset);
+		$line = str_replace($toremove, " ", $value);
+		$line = iconv($charsetm, "UTF-8", $line);
+		$line =  htmlentities($line, ENT_SUBSTITUTE);
+		return "$line";
+	}
+
+// simple text
 
 	if ((!strpos($value, "?Q?")) and (!strpos($value, "?B?")))
 	{
 		if ($charset == "US-ASCII") $charset =  "ISO8859-15";
-		$gg = 0;
-		for ($x = 0; $x < strlen($value); $x++)
-		{
-			if (ord($value[$x]) > 150)
-			{
-				$gg = $x;
-				break;
-			}
-		}
 
-	//	$value[$gg] = ""; // PHP BUG
-
- 		return htmlentities($value, ENT_SUBSTITUTE, $charset);
+ 		$ct = nntp_get_header($conf, $group, $article, "Content-Type", 0);
+        	$ct = str_replace("\"", "", $ct);
+        	if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match)) $charset = trim($match[1]);
+        	$charset = strtoupper($charset);	
+		$line =  htmlentities($value, ENT_SUBSTITUTE, $charset);
+ 		return "$line";
 	}
+
+	
+// Quoted printable
 
 	if (strpos($value, "?Q?"))
 	{
@@ -208,7 +234,7 @@ function clean_header($value, $conf, $newsgroup, $article)
 		$string_raw = $match[2];
 		$string_decoded = base64_decode($string_raw);
 		$string = htmlentities($string_decoded, ENT_SUBSTITUTE, $charset);		
-		return "$string";
+		return "3. $string";
 	}
 }
 
@@ -294,18 +320,20 @@ function plot_tree($xover, $screen, $group, $thread, $article, $conf, $post, $is
         $bgcolor = $colors[0];
         $border  = $colors[1];
 
-	if ($bgcolor == 0) $bgcolor = "#fff";
+	if (!empty($bgcolor)) $background = "background-color: $bgcolor;";
+	else $background = "";
+
 
 	$url = set_url("messages", $group, $thread, $article );
 
-	if ($article == $post) $bgcolor = "#bbd";
+	if ($article == $post) $background = "background-color: #bbd";
 
 	if ($isfirst) $style = "border-bottom: 1px solid #ccc; padding-left: 2%;";
 	else $style = "";
 
         echo "<ul style=\"$style\" class=\"lista\">";
         echo "
-<li style=\"background-color: $bgcolor;\"><a href=\"$url\">
+<li style=\"$background\"><a href=\"$url\">
 <div class=\"tree\" style=\"border-left: 5px solid $border;\"><b>$fromb</b><br />$date</div></a>";
 
 }
