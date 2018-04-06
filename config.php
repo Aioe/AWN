@@ -1,9 +1,9 @@
 <?php
 
-$conf["spooldir"] = "/var/www/html/spool";
-$conf["etcdir"]	= "/var/www/html/etc/";
+$conf["spooldir"] = "/var/www/html/test/spool";
+$conf["etcdir"]	= "/var/www/html/test/etc/";
 $conf["home"]   = "http://5.9.252.135";
-$conf["base"]   = "/";
+$conf["base"]   = "/test/";
 $conf["start"]  = "-500";
 $conf["server"] = "127.0.0.1";
 $conf["port"]   = 119;

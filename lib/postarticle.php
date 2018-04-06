@@ -129,15 +129,15 @@ function post_toolbar($conf, $type, $newsgroup, $thread, $article, $noquote)
 
 ////////////////////////////////////////
 
-        if ($type == 1) plot_single_icon($conf, "left", "index.php?screen=messages&amp;group=$newsgroup&amp;thread=$thread&amp;art=$article");
-	if ($type == 2) plot_single_icon($conf, "left", "index.php?screen=threadlist&amp;group=$newsgroup&amp;thread=$thread");
+        if ($type == 1) plot_single_icon($conf, "left", "index.php?screen=messages&amp;group=$newsgroup&amp;thread=$thread&amp;art=$article", "Back to message view");
+	if ($type == 2) plot_single_icon($conf, "left", "index.php?screen=threadlist&amp;group=$newsgroup&amp;thread=$thread", "Back to discussion thread" );
 
 	echo "<div class=\"toolbaricons\"><input type=\"image\" alt=\"Send message\" src=\"./png/send.png\"></div>\n";
 
 	if (strlen($thread) > 0) 
 	{
-		plot_single_icon($conf, "quote", "post.php?screen=messages&amp;group=$newsgroup&amp;thread=$thread&amp;art=$article&amp;type=$type");
-		if ($noquote == 0) plot_single_icon($conf, "cancel", "post.php?screen=messages&amp;group=$newsgroup&amp;thread=$thread&amp;art=$article&amp;type=$type&amp;noquote=1");
+		plot_single_icon($conf, "quote", "post.php?screen=messages&amp;group=$newsgroup&amp;thread=$thread&amp;art=$article&amp;type=$type", "Post a message");
+		if ($noquote == 0) plot_single_icon($conf, "cancel", "post.php?screen=messages&amp;group=$newsgroup&amp;thread=$thread&amp;art=$article&amp;type=$type&amp;noquote=1", "Redo from start");
                 else  if ($noquote == 1)
                 {
                         echo "<div class=\"toolbaricons\"><input id=\"magic\" type=\"image\" alt=\"Magic quote\" name=\"magic\" src=\"./png/cancel.png\"></div>\n";
@@ -148,8 +148,8 @@ function post_toolbar($conf, $type, $newsgroup, $thread, $article, $noquote)
                 }
 	} else // new message
 	{
-		plot_single_icon($conf, "quote", "post.php?screen=messages&amp;group=$newsgroup&amp;type=$type");
-		plot_single_icon($conf, "cancel", "");
+		plot_single_icon($conf, "quote", "post.php?screen=messages&amp;group=$newsgroup&amp;type=$type", "Smart quote sistem");
+		plot_single_icon($conf, "cancel", "", "Clear data");
 	}
 
 	echo "</div>\n";
