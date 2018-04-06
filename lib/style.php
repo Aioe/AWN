@@ -302,8 +302,8 @@ function plot_tree($xover, $screen, $group, $thread, $article, $conf, $post, $is
 
         echo "<ul style=\"$style\" class=\"lista\">";
         echo "
-<li style=\"background-color: $bgcolor;\">
-<div class=\"tree\" style=\"border-left: 5px solid $border;\"><a href=\"$url\"><b>$fromb</b><br />$date</a></div>";
+<li style=\"background-color: $bgcolor;\"><a href=\"$url\">
+<div class=\"tree\" style=\"border-left: 5px solid $border;\"><b>$fromb</b><br />$date</div></a>";
 
 }
 
