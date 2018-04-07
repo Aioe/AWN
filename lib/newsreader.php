@@ -65,8 +65,8 @@ if ($screen == "threadlist")
 	build_thread($xover, $screen, $thread, $article, $newsgroup, $conf);
 } else if ($screen = "messages")
 {
-	plot_message($xover, $screen, $newsgroup, $thread, $article, $conf);
-
+	$format = GET_header("format");
+	plot_message($xover, $screen, $newsgroup, $thread, $article, $conf, $format);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

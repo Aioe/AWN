@@ -119,11 +119,11 @@ function build_thread($xover, $screen, $thread, $article, $group, $conf, $newsgr
 
 // plot_message($fp, $xover, $screen, $newsgroup, $thread, $article, $conf);
 
-function plot_message($xover, $screen, $group, $thread, $article, $config)
+function plot_message($xover, $screen, $group, $thread, $article, $config, $format)
 {
-        plot_toolbar($xover, $config, $screen, $group, $thread, $article);
+        plot_toolbar($xover, $config, $screen, $group, $thread, $article, $format);
 
-	$body = get_nntp_body($config, $config["active"][$group], $article, 1);
+	$body = get_nntp_body($config, $config["active"][$group], $article, 1, $format);
 
         $mid = $xover[$article]["Mid"];
         $from = $xover[$article]["From"];
@@ -142,11 +142,10 @@ function plot_message($xover, $screen, $group, $thread, $article, $config)
 <div class=\"intestazioni\"><b>Newsgroup:</b>  $ng</div>
 <div class=\"intestazioni\"><b>Subject:</b>    $subject</div>
 <div class=\"intestazioni\"><b>Date:</b>       $date</div>
-<hr />
-<div class=\"testo\">$body</div>
-</div>
-";
+<hr />";
 
+	if ($format == 0) echo "<div class=\"testo\">$body</div></div>";
+	if ($format == 1) echo "<pre>$body</pre></div>";
 }
 
 function clean_header($value, $conf, $newsgroup, $article)

@@ -47,7 +47,7 @@ function nntp_xover($config, $group)
         return $xover;
 }
 
-function get_nntp_body($config, $group, $article, $html)
+function get_nntp_body($config, $group, $article, $html, $style)
 {
 	$file = $config["spooldir"] . "/data/$group/$article";
 	$art = file($file);
@@ -60,6 +60,7 @@ function get_nntp_body($config, $group, $article, $html)
 	$headers = 1;
 	$signature = 0;
 	$quotelevel = 0;
+	$flowed = 0;
 	$format = 0;
 
 	$charset = "ISO8859-15"; // Default
@@ -82,7 +83,50 @@ function get_nntp_body($config, $group, $article, $html)
 		{
 			$output = $line;
 
-                        if ($html == 1)
+			if ($flowed == 1)
+			{
+				$output = " $output";
+				$flowed = 0;
+			}
+			if ($output[0] == " ") $flowed = 1;
+
+			$leng = strlen($output) -3;
+        		if (($output[$leng] == "=") or (($format == 1) and ($output[$leng] == " "))) 
+			{
+				$output = str_replace("\n", "", $output);
+				$output = str_replace("\r", "", $output);
+
+				for ($x = 0; $x < strlen($output); $x++) 
+				{
+					if ($output[$x] == "=")
+					{
+						$g = $x + 1;
+						if (ord($output[$g]) == 0) 
+						{
+							$output = rtrim($output, "=");
+						}
+					}
+				}
+
+				$nobreak = 1;				
+			}
+
+                        if (($style == 1) and ($html  == 1))
+                        {
+				if (($output[0] != ">") and ($quotelevel == 1))
+				{
+					$quotelevel = 0;
+					$output = "\n$output";
+				}
+				if ($output[0] == ">") $quotelevel =  1;
+				$output = quoted_printable_decode($output);
+				$output = htmlentities($output, ENT_SUBSTITUTE, $charset);
+				$body .= "$output";
+				continue;
+                        }
+
+
+                        if (($html == 1) and ($style == 0))
                         {
                                 $quote = 0;
                                 $string = "";
@@ -104,15 +148,6 @@ function get_nntp_body($config, $group, $article, $html)
                                 }
                         } else $output = "$output\n";
 
-
-			$leng = strlen($output) -3;
-        		if (($output[$leng] == "=") or (($format == 1) and ($output[$leng] == " "))) 
-			{
-				$nobreak = 1;
-				$output[$leng] = "";
-			}
-
-
         		$output = quoted_printable_decode($output); 
 
 			if (preg_match("/^\-\-/", $output)) $signature = 1;
@@ -126,20 +161,23 @@ function get_nntp_body($config, $group, $article, $html)
 					$output = str_replace("</div><br />", "</div>\n", $output);
 					if ($nobreak == 1) $output = preg_replace("/^<br \/>/", "", $output);
 			}
-			if (($signature == 0) or (($signature == 1) and ($html == 1))) $body .= "$output\n";
+			if (($signature == 0) or (($signature == 1) and ($html == 1))) $body .= "$output";
 
 		}
 	}
 
-	if ($html == 1) 
+	if (($html == 1) and ($style == 0))
 	{
 			$body = str_replace("<br /></div>", "</div>", $body);
 			$body = str_replace("<div class=\"quote\"><br />", "<div class=\"quote\">", $body);
 			$body = str_replace("<div class=\"testo\"><br />", "<div class=\"testo\">", $body);
+			$body = str_replace("<br /><div class=\"quote\">", "<div class=\"quote\">", $body); 
+			$body = str_replace("<div class=\"quote\"> \n<br />", "<div class=\"quote\">", $body);
 			$body = str_replace("<br />\n</div>", "</div>", $body);
 			$body = str_replace("<br />\n<br />", "<br />", $body);
 			$body = str_replace("<br /><br />", "<br />", $body);
 			$body = str_replace("<br />\n<br />", "<br />", $body);
+			$body = str_replace("<br /></div>", "</div>", $body);
 	}
 	return $body;
 

@@ -51,10 +51,11 @@ function plot_toolbar_tree($conf, $xover, $group, $thread, $article)
         else plot_single_icon($conf, "right", "", "Next thread");
 }
 
-function plot_toolbar_messages($conf, $xover, $group, $thread, $article)
+function plot_toolbar_messages($conf, $xover, $group, $thread, $article, $format)
 {
-	plot_single_icon($conf, "quit", "index.php?screen=threadlist&amp;group=$group&amp;thread=$thread&amp;art=$article", "Back to list of thread"); 	// 1									// 1
-	plot_single_icon($conf, "listgroups", $conf["base"], "Back to list of subscribed groups");							// 2
+	plot_single_icon($conf, "quit", "index.php?screen=threadlist&amp;group=$group&amp;thread=$thread&amp;art=$article", "Back to list of thread"); 	// 1
+	if ($format == 0) plot_single_icon($conf, "text", "?screen=messages&group=$group&thread=$thread&art=$article&amp;format=1", "Show message in text only format");	// 2
+	if ($format == 1) plot_single_icon($conf, "richtext", "?screen=messages&group=$group&thread=$thread&art=$article&amp;format=0", "Show message in rich text format");
 	plot_single_icon($conf, "reply", "post.php?type=1&amp;group=$group&amp;thread=$thread&amp;art=$article", "Post a reply");	 		// 3
         $xover = set_next_article($xover, $group, $thread, $article);
         if (isset($xover[$article]["thread"]["prev"])) $prev = $xover[$article]["thread"]["prev"];
@@ -76,14 +77,14 @@ function plot_toolbar_messages($conf, $xover, $group, $thread, $article)
 }
 
 
-function plot_toolbar($xover, $conf, $screen, $group, $thread, $article)
+function plot_toolbar($xover, $conf, $screen, $group, $thread, $article, $format)
 {
         echo "<div class=\"top\">\n";
 
         if ($screen == "groups") plot_toolbar_groups($conf, $group, $thread, $article); 		// lista dei gruppi
         elseif ($screen == "threadlist") plot_toolbar_threadlist($conf, $group, $thread, $article);   	//lista dei thread
         elseif ($screen == "tree") plot_toolbar_tree($conf, $xover, $group, $thread, $article); 		// albero dei messaggi
-        elseif ($screen == "messages") plot_toolbar_messages($conf, $xover, $group, $thread, $article);		// messaggi
+        elseif ($screen == "messages") plot_toolbar_messages($conf, $xover, $group, $thread, $article, $format);		// messaggi
 
         echo "</div>\n";
         echo "<div class=\"endtoolbar\">&nbsp;</div>";

@@ -88,7 +88,6 @@ a {
   		overflow:  auto;
   		word-wrap: break-word;         /* All browsers since IE 5.5+ */
   		overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
-  		word-break: break-word;
 		padding-top: 1%;
 		padding-bottom: 1%;
 	}
@@ -144,7 +143,6 @@ a {
         overflow:  auto;
         word-wrap: break-word;         /* All browsers since IE 5.5+ */
         overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
-        word-break: break-word;
 }
 
 .testo
@@ -356,3 +354,7 @@ legend
         padding-left: 1%;
 }
 
+pre
+{
+	word-wrap: default;
+}
