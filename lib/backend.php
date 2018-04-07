@@ -118,7 +118,11 @@ function get_nntp_body($config, $group, $article, $html, $style)
 					$quotelevel = 0;
 					$output = "\n$output";
 				}
-				if ($output[0] == ">") $quotelevel =  1;
+				if (($output[0] == ">") and ($quotelevel == 0)) 
+				{
+					$output = "\n$output";
+					$quotelevel = 1;
+				}
 				$output = quoted_printable_decode($output);
 				$output = htmlentities($output, ENT_SUBSTITUTE, $charset);
 				$body .= "$output";
@@ -161,7 +165,7 @@ function get_nntp_body($config, $group, $article, $html, $style)
 					$output = str_replace("</div><br />", "</div>\n", $output);
 					if ($nobreak == 1) $output = preg_replace("/^<br \/>/", "", $output);
 			}
-			if (($signature == 0) or (($signature == 1) and ($html == 1))) $body .= "$output";
+			if (($signature == 0) or (($signature == 1) and ($html == 1))) $body .= "$output ";
 
 		}
 	}
