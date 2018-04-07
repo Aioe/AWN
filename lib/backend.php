@@ -49,40 +49,88 @@ function nntp_xover($config, $group)
 
 function get_nntp_body($config, $group, $article, $html)
 {
-
 	$file = $config["spooldir"] . "/data/$group/$article";
 	$art = file($file);
 	if (!$art)
 	{
 		show_error_string("Unable to fetch body content from file $file, aborting", 0);
 		return 0;
-	}
+	} 
 	$body = "";
 	$headers = 1;
-	$quote = 0;
-	$swit = 0;
 	$signature = 0;
+	$quotelevel = 0;
 
 	foreach($art as $line)
 	{
 		if ($line[0] == "\r") $headers = 0;
+		$nobreak = 0;
 		if ($headers == 0)
 		{
-			$clean = clean_body_line($line, $config, $group, $article);
+        		$output = rtrim($line);
+
+			$leng = strlen($output) -1;
+        		if ($output[$leng] == "=") 
+			{
+				$nobreak = 1;
+				$output[$leng] = "";
+			}
+        		$output = quoted_printable_decode($output); 
+
+
+      		        $charset = "ISO8859-15"; // Default
+        		$ct = nntp_get_header($config, $group, $article, "Content-Type", 0);
+        		$ct = str_replace("\"", "", $ct);
+        		if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match)) $charset = trim($match[1]);
+        		$charset = strtoupper($charset);	
 			if ($html == 1)
 			{
-				$levels = substr_count($clean, "&gt;");
-				if ($levels > $value) for ($value; $value < $levels; $value++) $clean = "<div class=\"quote\">$clean";
-				if ($levels < $value) for ($value; $value > $levels; $value--) $clean = "</div>";
-				for ($x = $value; $x > 0; $x--) $clean = preg_replace("/&gt;/", "", $clean);
-				$clean = preg_replace("/^<br \/>/", "", $clean); // qui va tolto l'apice per ottenere il formato continuo
-				$clean = str_replace("<div class=\"quote\"><br />", "<div class=\"quote\">", $clean);
-			} else $clean = "$clean\n";
-			if (preg_match("/^\-\-/", $clean)) $signature = 1;
-			if (($signature == 0) or (($signature == 1) and ($html == 1))) $body .= "$clean\n";
+				$quote = 0;
+				$string = "";
+				for ($n = 0; $n < strlen($output); $n++)
+				{
+					if ($output[$n] == ">") $quote++;
+					if (($output[$n] != " ") and ($output[$n] != ">")) break;
+				}
+				for ($x = 0; $x != $quote; $x++) $output = preg_replace("/>/", "", $output);
+				if ($quote > $quotelevel)
+				{
+					$diff = $quote - $quotelevel;
+					for ($quotelevel; $quotelevel != $quote; $quotelevel++) $output = "STARTDIVSTYLEQUOTE$output";
+				}
+
+				if ($quote < $quotelevel)
+				{
+					for ($quotelevel; $quotelevel != $quote; $quotelevel--) $output = "ENDDIVSTYLEQUOTE$output";
+				}
+			} else $output = "$output\n";
+// Charset
+			$charset = "ISO8859-15"; // Default
+                        $ct = nntp_get_header($config, $group, $article, "Content-Type", 0);
+                        $ct = str_replace("\"", "", $ct);
+                        if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match)) $charset = trim($match[1]);
+			if (preg_match("/^\-\-/", $output)) $signature = 1;
+			if ($html == 1) 
+			{
+					$output = htmlentities($output, ENT_SUBSTITUTE, $charset);
+					if ($nobreak == 0) $output .= "<br />\n";
+					$output = trim($output);
+					$output = str_replace("STARTDIVSTYLEQUOTE", "<div class=\"quote\">", $output);
+					$output = str_replace("ENDDIVSTYLEQUOTE", "</div>", $output);
+					$output = str_replace("</div><br />", "</div>\n", $output);
+					$output = preg_replace("/^<br \/>/", "", $output);
+			}
+			if (($signature == 0) or (($signature == 1) and ($html == 1))) $body .= "$output\n";
+
 		}
 	}
 
+	if ($html == 1) 
+	{
+			$body = str_replace("<br /><br />", "<br />", $body);
+			$body = str_replace("<br /></div>", "</div>", $body);
+			$body = str_replace("<div class=\"quote\"><br />", "<div class=\"quote\">", $body);
+	}
 	return $body;
 
 }
@@ -156,7 +204,7 @@ function nntp_get_header($conf, $group, $article, $header, $html)
         $lines = file($file);
         if (!$lines)
         {
-                show_error_string("Unable to read data from $file, which is needed to post an article", $html);
+                show_error_string("Unable to read data from $file", $html);
                 return 0;
         }
 

@@ -351,34 +351,6 @@ function set_background_color($diff, $conf)
         return $ret;
 }
 
-function clean_body_line($line, $conf, $group, $article)
-{
-        $output = rtrim($line);
-        $leng = strlen($output);
-	if (
-		(!isset($leng)) or ($leng == 0)
-	   ) $leng = 0;
-	else $leng--;
-	$nobreak = 0;
-
-	if (!isset($output[$leng])) return "";
-
-       	if ($output[$leng] == "=") $nobreak = 1;
-	$output = quoted_printable_decode($output); 
-
-	$charset = "ISO8859-15"; // Default
-
-	$ct = nntp_get_header($conf, $group, $article, "Content-Type", 0);
-
-	$ct = str_replace("\"", "", $ct);
-	if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match)) $charset = trim($match[1]);
-
-	$charset = strtoupper($charset);
-	$output = htmlentities($output, ENT_SUBSTITUTE, $charset);
-	if ($nobreak == 0) $output .= "<br />";
-	return $output;
-}
-
 function show_error_string($error, $html)
 { 
 	if ($html == 1)	
