@@ -60,55 +60,61 @@ function get_nntp_body($config, $group, $article, $html)
 	$headers = 1;
 	$signature = 0;
 	$quotelevel = 0;
+	$format = 0;
+
+	$charset = "ISO8859-15"; // Default
+        $ct = nntp_get_header($config, $group, $article, "Content-Type", 0);
+        $ct = str_replace("\"", "", $ct);
+        if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match)) $charset = trim($match[1]);
+        if (preg_match("/format=flowed/i", $ct)) $format = 1;
+	$charset = strtoupper($charset);        
+
 
 	foreach($art as $line)
 	{
-		if ($line[0] == "\r") $headers = 0;
+		if ($line[0] == "\r") 
+		{
+			$headers = 0;
+			continue;
+		}
 		$nobreak = 0;
 		if ($headers == 0)
 		{
-        		$output = rtrim($line);
+			$output = $line;
 
-			$leng = strlen($output) -1;
-        		if ($output[$leng] == "=") 
+                        if ($html == 1)
+                        {
+                                $quote = 0;
+                                $string = "";
+                                for ($n = 0; $n < strlen($output); $n++)
+                                {
+                                        if ($output[$n] == ">") $quote++;
+                                        if (($output[$n] != " ") and ($output[$n] != ">")) break;
+                                }
+                                for ($x = 0; $x != $quote; $x++) $output = preg_replace("/>/", "", $output);
+                                if ($quote > $quotelevel)
+                                {
+                                        $diff = $quote - $quotelevel;
+                                        for ($quotelevel; $quotelevel != $quote; $quotelevel++) $output = "STARTDIVSTYLEQUOTE$output";
+                                }
+
+                                if ($quote < $quotelevel)
+                                {
+                                        for ($quotelevel; $quotelevel != $quote; $quotelevel--) $output = "ENDDIVSTYLEQUOTE$output";
+                                }
+                        } else $output = "$output\n";
+
+
+			$leng = strlen($output) -3;
+        		if (($output[$leng] == "=") or (($format == 1) and ($output[$leng] == " "))) 
 			{
 				$nobreak = 1;
 				$output[$leng] = "";
 			}
+
+
         		$output = quoted_printable_decode($output); 
 
-
-      		        $charset = "ISO8859-15"; // Default
-        		$ct = nntp_get_header($config, $group, $article, "Content-Type", 0);
-        		$ct = str_replace("\"", "", $ct);
-        		if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match)) $charset = trim($match[1]);
-        		$charset = strtoupper($charset);	
-			if ($html == 1)
-			{
-				$quote = 0;
-				$string = "";
-				for ($n = 0; $n < strlen($output); $n++)
-				{
-					if ($output[$n] == ">") $quote++;
-					if (($output[$n] != " ") and ($output[$n] != ">")) break;
-				}
-				for ($x = 0; $x != $quote; $x++) $output = preg_replace("/>/", "", $output);
-				if ($quote > $quotelevel)
-				{
-					$diff = $quote - $quotelevel;
-					for ($quotelevel; $quotelevel != $quote; $quotelevel++) $output = "STARTDIVSTYLEQUOTE$output";
-				}
-
-				if ($quote < $quotelevel)
-				{
-					for ($quotelevel; $quotelevel != $quote; $quotelevel--) $output = "ENDDIVSTYLEQUOTE$output";
-				}
-			} else $output = "$output\n";
-// Charset
-			$charset = "ISO8859-15"; // Default
-                        $ct = nntp_get_header($config, $group, $article, "Content-Type", 0);
-                        $ct = str_replace("\"", "", $ct);
-                        if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match)) $charset = trim($match[1]);
 			if (preg_match("/^\-\-/", $output)) $signature = 1;
 			if ($html == 1) 
 			{
@@ -118,7 +124,7 @@ function get_nntp_body($config, $group, $article, $html)
 					$output = str_replace("STARTDIVSTYLEQUOTE", "<div class=\"quote\">", $output);
 					$output = str_replace("ENDDIVSTYLEQUOTE", "</div>", $output);
 					$output = str_replace("</div><br />", "</div>\n", $output);
-					$output = preg_replace("/^<br \/>/", "", $output);
+					if ($nobreak == 1) $output = preg_replace("/^<br \/>/", "", $output);
 			}
 			if (($signature == 0) or (($signature == 1) and ($html == 1))) $body .= "$output\n";
 
@@ -127,9 +133,13 @@ function get_nntp_body($config, $group, $article, $html)
 
 	if ($html == 1) 
 	{
-			$body = str_replace("<br /><br />", "<br />", $body);
 			$body = str_replace("<br /></div>", "</div>", $body);
 			$body = str_replace("<div class=\"quote\"><br />", "<div class=\"quote\">", $body);
+			$body = str_replace("<div class=\"testo\"><br />", "<div class=\"testo\">", $body);
+			$body = str_replace("<br />\n</div>", "</div>", $body);
+			$body = str_replace("<br />\n<br />", "<br />", $body);
+			$body = str_replace("<br /><br />", "<br />", $body);
+			$body = str_replace("<br />\n<br />", "<br />", $body);
 	}
 	return $body;
 

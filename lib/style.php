@@ -40,7 +40,7 @@ function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $a
                         $colors = set_background_color($diff, $conf);
                         $border  = $colors[1];
 
-			$color = "background-color: $colors[0];";                
+			$color = "background: linear-gradient(+90deg, #fff, $colors[0]);";
                         if ($replies > 0)
                         {
 				$url = set_url("tree", $newsgroup, $start, "");
@@ -56,7 +56,7 @@ function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $a
 //				if ($bgcolor == 0) $bgcolor = "#fff";
 		                $container[$diff] = "
 <a href=\"$url\">
-<div style=\"$color background-color: $bgcolor;  border-left: 5px solid $border;\" class=\"main3d\">
+<div style=\"$color border-left: 5px solid $border;\" class=\"main3d\">
                 <div class=\"description\">$subject</div>
                 <div class=\"addenda\">by <b>$nick</b> on $date</div>
 </div></a>
@@ -268,10 +268,9 @@ function plot_grouplist($config, $screen, $newsgroup, $thread, $article)
                 $border  = $colors[1];
 
 		$url = set_url("threadlist", $id, $thread, $article);
-
 echo "
 <a href=\"$url\">
-<div style=\"background-color: $bgcolor;  border-left: 5px solid $border\" class=\"main3d\">
+<div style=\"background: linear-gradient(+90deg, #fff, $colors[0]);  border-left: 5px solid $border;\" class=\"main3d\">
 <div class=\"description\">$group</div>
 </div></a>\n";
         }
