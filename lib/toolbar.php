@@ -2,7 +2,7 @@
 
 function plot_toolbar_groups($conf, $group, $thread, $article)
 {
-	plot_single_icon($conf, "menu", $conf["home"], "Back to menu");			// 1
+	plot_single_icon($conf, "menu", "", "Back to menu");			// 1
 	plot_single_icon($conf, "listgroups", "", "List subscribed groups");		// 2
         plot_single_icon($conf, "listhreads", "", "List discussion threads");		// 3
         plot_single_icon($conf, "tree", "", "Show discussion tree");			// 4
@@ -13,7 +13,7 @@ function plot_toolbar_groups($conf, $group, $thread, $article)
 
 function plot_toolbar_threadlist($conf, $group, $thread, $article)
 { 
-	plot_single_icon($conf, "quit", $conf["home"], "Back to menu");						// 1
+	plot_single_icon($conf, "quit", $conf["home"], "Back to list of threads");						// 1
         $next = $group + 1;
         if ($next > count($conf["active"]) -1) $next = 0;
         $prev = $group - 1;
@@ -32,7 +32,7 @@ function plot_toolbar_threadlist($conf, $group, $thread, $article)
 
 function plot_toolbar_tree($conf, $xover, $group, $thread, $article)
 {
-	plot_single_icon($conf, "quit", $conf["home"], "Back to menu");											// 1
+	plot_single_icon($conf, "quit", "?screen=threadlist&amp;group=$group&amp;thread=$thread", "Back to list of threads");											// 1
 	$t3d = set_next_thread($xover, $group, $thread);
         $prev = $t3d[0];
         $next = $t3d[1];
@@ -53,9 +53,9 @@ function plot_toolbar_tree($conf, $xover, $group, $thread, $article)
 
 function plot_toolbar_messages($conf, $xover, $group, $thread, $article, $format)
 {
-	plot_single_icon($conf, "quit", "index.php?screen=threadlist&amp;group=$group&amp;thread=$thread&amp;art=$article", "Back to list of thread"); 	// 1
-	if ($format == 0) plot_single_icon($conf, "text", "?screen=messages&group=$group&thread=$thread&art=$article&amp;format=1", "Show message in text only format");	// 2
-	if ($format == 1) plot_single_icon($conf, "richtext", "?screen=messages&group=$group&thread=$thread&art=$article&amp;format=0", "Show message in rich text format");
+	plot_single_icon($conf, "quit", "index.php?screen=tree&amp;group=$group&amp;thread=$thread", "Back to list of thread"); 	// 1
+	if ($format == 0) plot_single_icon($conf, "text", "?screen=messages&amp;group=$group&amp;thread=$thread&amp;art=$article&amp;format=1", "Show message in text only format");	// 2
+	if ($format == 1) plot_single_icon($conf, "richtext", "?screen=messages&group=$group&amp;thread=$thread&amp;art=$article&amp;format=0", "Show message in rich text format");
 	plot_single_icon($conf, "reply", "post.php?type=1&amp;group=$group&amp;thread=$thread&amp;art=$article", "Post a reply");	 		// 3
         $xover = set_next_article($xover, $group, $thread, $article);
         if (isset($xover[$article]["thread"]["prev"])) $prev = $xover[$article]["thread"]["prev"];
