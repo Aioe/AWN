@@ -95,10 +95,25 @@ function get_nntp_body($conf, $group, $article, $html, $format)
                 }
         }
 
+        if ($html == 0)
+        {
+                $lines = explode("\r\n", $body);
+                $body = "";
+                $signature = 0;
+                foreach($lines as $output)
+                {
+                        if (preg_match("/^--/", $output)) $signature = 1;
+                        if ($signature == 1) $output = "";
+                        $body .= "$output";
+                }
+        }
+
+
 	if (($html == 1) and ($format == 0))
         {
                 $lines = explode("\r\n", $body);
 		$body = "";
+		$signature = 0;
                 foreach($lines as $output)
                 {
                         $quote = 0;
@@ -118,8 +133,15 @@ function get_nntp_body($conf, $group, $article, $html, $format)
                         {
                                 for ($quotelevel; $quotelevel != $quote; $quotelevel--) $output = "ENDDIVSTYLEQUOTE$output";
                         } else $output = "$output\r\n";
-    			$body .= $output;                    
+			if (preg_match("/^--/", $output))
+			{
+				$output = "STARTDIVSTYLESIGNATURE$output";
+				$signature = 1;
+			}			
+			if ($signature == 1) $body .= "$output\r\n";
+			else $body .= "$output ";                    
                 }
+		if ($signature == 1) $body .= "ENDDIVSTYLESIGNATURE";
 	}	
 
 	$charset = "ISO8859-15"; // Default
@@ -171,12 +193,12 @@ function get_nntp_body($conf, $group, $article, $html, $format)
 	{
 	        $body = str_replace("STARTDIVSTYLEQUOTE", "<div class=\"quote\">", $body);
                 $body = str_replace("ENDDIVSTYLEQUOTE", "</div>", $body);
+                $body = str_replace("STARTDIVSTYLESIGNATURE", "<div class=\"signature\">", $body);
+                $body = str_replace("ENDDIVSTYLESIGNATURE", "</div>", $body);
                 $body = str_replace("</div><br />", "</div>\n", $body); 
 		$body = str_replace("<br /></div>", "</div>\n", $body);
-		$body = str_replace("<br /><br />", "<br />", $body);
+		$body = str_replace("<br /><br />", "<br />", $body); 
 	}
-
-	
 
 	if ($flowed == 0) $body = str_replace("\r\n", "<br />\n", $body);
 	return "$body";
