@@ -69,12 +69,12 @@ function get_nntp_body($conf, $group, $article, $html, $format)
                 }
                 if ($headers == 0)
                 {
+			if (preg_match("/=\r\n$/", $line)) $line = str_replace("=\r\n", "", $line);
 			$body .= $line;
 
 		}	
 	}
 
-  
         if ($format == 1) {
                 $lines = explode("\r\n", $body);
                 $body = "";
@@ -127,6 +127,13 @@ function get_nntp_body($conf, $group, $article, $html, $format)
 	$ct = str_replace("\"", "", $ct);
 	$ce =  nntp_get_header($conf, $group, $article, "Content-Transfer-Encoding", 1);
 	
+	if ($format == 2)
+	{
+		$body = "";
+		foreach ($art as $line) $body .= htmlentities($line, ENT_SUBSTITUTE, $charset) . "<br />";
+		return $body;
+	}
+
 	$flowed = 0;
 	if (preg_match("/format=flowed/i", $ct)) $flowed = 1;
 
@@ -168,6 +175,8 @@ function get_nntp_body($conf, $group, $article, $html, $format)
 		$body = str_replace("<br /></div>", "</div>\n", $body);
 		$body = str_replace("<br /><br />", "<br />", $body);
 	}
+
+	
 
 	if ($flowed == 0) $body = str_replace("\r\n", "<br />\n", $body);
 	return "$body";

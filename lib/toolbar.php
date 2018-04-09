@@ -55,7 +55,8 @@ function plot_toolbar_messages($conf, $xover, $group, $thread, $article, $format
 {
 	plot_single_icon($conf, "quit", "index.php?screen=tree&amp;group=$group&amp;thread=$thread", "Back to list of thread"); 	// 1
 	if ($format == 0) plot_single_icon($conf, "text", "?screen=messages&amp;group=$group&amp;thread=$thread&amp;art=$article&amp;format=1", "Show message with no quote");	// 2
-	if ($format == 1) plot_single_icon($conf, "richtext", "?screen=messages&group=$group&amp;thread=$thread&amp;art=$article&amp;format=0", "Show full message");
+	if ($format == 1) plot_single_icon($conf, "richtext", "?screen=messages&group=$group&amp;thread=$thread&amp;art=$article&amp;format=2", "Show raw message");
+	if ($format == 2) plot_single_icon($conf, "richtext", "?screen=messages&group=$group&amp;thread=$thread&amp;art=$article&amp;format=0", "Show full message");
 	plot_single_icon($conf, "reply", "post.php?type=1&amp;group=$group&amp;thread=$thread&amp;art=$article", "Post a reply");	 		// 3
         $xover = set_next_article($xover, $group, $thread, $article);
         if (isset($xover[$article]["thread"]["prev"])) $prev = $xover[$article]["thread"]["prev"];
