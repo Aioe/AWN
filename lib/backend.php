@@ -74,6 +74,35 @@ function get_nntp_body($conf, $group, $article, $html, $style)
 		}	
 	}
 
+	if ($html == 1)
+        {
+                $lines = explode("\r\n", $body);
+		$body = "";
+                foreach($lines as $output)
+                {
+                        $quote = 0;
+                        $string = "";
+                        for ($n = 0; $n < strlen($output); $n++)
+                        {
+                                if ($output[$n] == ">") $quote++;
+                                if (($output[$n] != " ") and ($output[$n] != ">")) break;
+                        }
+                        for ($x = 0; $x != $quote; $x++) $output = preg_replace("/>/", "", $output);
+                        if ($quote > $quotelevel)
+                        {
+                                $diff = $quote - $quotelevel;
+                                for ($quotelevel; $quotelevel != $quote; $quotelevel++) $output = "STARTDIVSTYLEQUOTE$output";
+                        }
+                        if ($quote < $quotelevel)
+                        {
+                                for ($quotelevel; $quotelevel != $quote; $quotelevel--) $output = "ENDDIVSTYLEQUOTE$output";
+                        } else $output = "$output\r\n";
+    			$body .= $output;                    
+                }
+
+
+	}	
+
 	$charset = "ISO8859-15"; // Default
 	$ct =  nntp_get_header($conf, $group, $article, "Content-Type", 1);
 	$ct = str_replace("\"", "", $ct);
@@ -110,6 +139,14 @@ function get_nntp_body($conf, $group, $article, $html, $style)
 			else if ($cr == 0) $line = "$line<br />";
 			$body .= "$line";
 		}
+	}
+
+	if ($html == 1)
+	{
+	        $body = str_replace("STARTDIVSTYLEQUOTE", "<div class=\"quote\">", $body);
+                $body = str_replace("ENDDIVSTYLEQUOTE", "</div>", $body);
+                $body = str_replace("</div><br />", "</div>\n", $body); 
+		$body = str_replace("<br /></div>", "</div>\n", $body);
 	}
 
 	if ($flowed == 0) $body = str_replace("\r\n", "<br />\n", $body);
