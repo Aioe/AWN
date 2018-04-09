@@ -47,7 +47,7 @@ function nntp_xover($config, $group)
         return $xover;
 }
 
-function get_nntp_body($conf, $group, $article, $html, $style)
+function get_nntp_body($conf, $group, $article, $html, $format)
 {
 	$file = $conf["spooldir"] . "/data/$group/$article";
 	$art = file($file);
@@ -74,7 +74,28 @@ function get_nntp_body($conf, $group, $article, $html, $style)
 		}	
 	}
 
-	if ($html == 1)
+  
+        if ($format == 1) {
+                $lines = explode("\r\n", $body);
+                $body = "";
+                $rem = 0;
+                foreach($lines as $output)
+                { 
+                        if ($output[0] == ">") 
+                        {       
+                                $output = "";
+                                if ($rem == 0) $rem = 1;
+                        } else $rem = 0;
+                        if ($rem == 1) 
+                        {
+                                $output = "[Quoted Text Removed]";
+                                $rem = 2;
+                        }
+			$body .= "$output\r\n";
+                }
+        }
+
+	if (($html == 1) and ($format == 0))
         {
                 $lines = explode("\r\n", $body);
 		$body = "";
@@ -99,8 +120,6 @@ function get_nntp_body($conf, $group, $article, $html, $style)
                         } else $output = "$output\r\n";
     			$body .= $output;                    
                 }
-
-
 	}	
 
 	$charset = "ISO8859-15"; // Default
@@ -147,6 +166,7 @@ function get_nntp_body($conf, $group, $article, $html, $style)
                 $body = str_replace("ENDDIVSTYLEQUOTE", "</div>", $body);
                 $body = str_replace("</div><br />", "</div>\n", $body); 
 		$body = str_replace("<br /></div>", "</div>\n", $body);
+		$body = str_replace("<br /><br />", "<br />", $body);
 	}
 
 	if ($flowed == 0) $body = str_replace("\r\n", "<br />\n", $body);

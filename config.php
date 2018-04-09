@@ -1,10 +1,10 @@
 <?php
 
-$conf["spooldir"] = "/var/www/html/spool/";
+$conf["spooldir"] = "/var/www/html/test/spool/";
 $conf["etcdir"]	= "/var/www/html/etc/";
 $conf["home"]   = "http://5.9.252.135";
-$conf["base"]   = "/";
-$conf["start"]  = "-500";
+$conf["base"]   = "/test/";
+$conf["start"]  = "-800";
 $conf["server"] = "127.0.0.1";
 $conf["port"]   = 119;
 $conf["active"] = array(

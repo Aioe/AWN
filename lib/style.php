@@ -144,8 +144,7 @@ function plot_message($xover, $screen, $group, $thread, $article, $config, $form
 <div class=\"intestazioni\"><b>Date:</b>       $date</div>
 <hr />";
 
-	if ($format == 0) echo "<div class=\"testo\">$body</div></div>";
-	if ($format == 1) echo "<pre>$body</pre></div>";
+	echo "<div class=\"testo\">$body</div></div>";
 }
 
 function clean_header($value, $conf, $newsgroup, $article)
