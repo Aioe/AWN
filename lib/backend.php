@@ -198,7 +198,7 @@ function get_nntp_body($conf, $group, $article, $html, $format)
                 $body = str_replace("</div><br />", "</div>\n", $body); 
 		$body = str_replace("<br /></div>", "</div>\n", $body);
 		$body = str_replace("<br /><br />", "<br />", $body); 
-		$body = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)@',
+		$body = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\-\#\.]*(\?\S+)?)?)?)@',
              '<a href="$1">$1</a>', $body);
 
 	}
