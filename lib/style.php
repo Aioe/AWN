@@ -150,91 +150,27 @@ function plot_message($xover, $screen, $group, $thread, $article, $config, $form
 
 function clean_header($value, $conf, $newsgroup, $article)
 {
-	$value = trim($value);
-	$charset = "ISO8859-15"; // Default
-        $group = $conf["active"][$newsgroup];
-        $ct = nntp_get_header($conf, $group, $article, "Content-Type", 0);
+        $charset = "ISO8859-15"; // Default
+	$group = $conf["active"][$newsgroup];
+        $ct =  nntp_get_header($conf, $group, $article, "Content-Type", 1);
         $ct = str_replace("\"", "", $ct);
+        $ce =  nntp_get_header($conf, $group, $article, "Content-Transfer-Encoding", 1);
+        
         if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match)) $charset = trim($match[1]);
-        $charset = strtoupper($charset);
+        $charset = strtoupper($charset);      
 
-// multiline
-	$num = substr_count($value, "?Q?");
-	if ($num > 1)
-	{
-		$lm = 0;
-		$pos = strpos($value, "?Q?");
-		for ($x = $pos; $x > -1; $x--) 
-		{
-			if ($value[$x] == " ") 
-			{
-				$lm = $x;
-				break;
-			}
-		} 
+        if ((!preg_match("/quoted\-printable/i", $ce)) and  (!preg_match("/base64/i", $ce)))
+        {
+                $value = htmlentities($value, ENT_SUBSTITUTE, $charset);
+        } else if (preg_match("/quoted\-printable/i", $ce)) {
+                $value = quoted_printable_decode($value);
+                $value = htmlentities($value, ENT_SUBSTITUTE, $charset);
+        }  else if (preg_match("/base64/i", $ce)) {
+                $value = base64_decode($value);
+                $value = htmlentities($value, ENT_SUBSTITUTE, $charset);
+        }
 
-		$leng = $pos - $lm;
-
-		$prima_parte = substr($value, 0, $lm);
-		$charset = substr($value, $lm, $leng);
-		$charsetm = strtoupper($charset);
-
-		$toremove = array("?Q?", $charset);
-		$line = str_replace($toremove, " ", $value);
-		$line = iconv($charsetm, "UTF-8", $line);
-		$line =  htmlentities($line, ENT_SUBSTITUTE);
-		return "$line";
-	}
-
-// simple text
-
-	if ((!strpos($value, "?Q?")) and (!strpos($value, "?B?")))
-	{
-		if ($charset == "US-ASCII") $charset =  "ISO8859-15";
-
- 		$ct = nntp_get_header($conf, $group, $article, "Content-Type", 0);
-        	$ct = str_replace("\"", "", $ct);
-        	if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match)) $charset = trim($match[1]);
-        	$charset = strtoupper($charset);	
-		$line =  htmlentities($value, ENT_SUBSTITUTE, $charset);
- 		return "$line";
-	}
-
-	
-// Quoted printable
-
-	if (strpos($value, "?Q?"))
-	{
-		preg_match("/(.+)\?Q\?(.+)/", $value, $match);
-		$first 	= $match[1];
-		$last	= $match[2];	
-
-		$elems = explode(" ", $first);
-
-		if (count($elems) < 2) $charsetb = $first;
-		else {
-			$n = count($elems);
-			$n--;
-			$charsetb = $elems[$n];
-			for($x = 0; $x < $n; $x++) $first_string .= " $elems[$x] ";
-		}
-
-		$fse = htmlentities($first_string, ENT_SUBSTITUTE, $charset);
-		$sse = htmlentities($last, ENT_SUBSTITUTE, $charsetb);
-		$output = $fse . $sse;
-		return "$output";
-	}
-
-	if (strpos($value, "?B?"))
-	{
-		preg_match("/(.+)\?B\?(.+)/", $value, $match);
-		$charset = $match[1];
-		$charset = strtoupper($charset);
-		$string_raw = $match[2];
-		$string_decoded = base64_decode($string_raw);
-		$string = htmlentities($string_decoded, ENT_SUBSTITUTE, $charset);		
-		return "3. $string";
-	}
+	return $value;
 }
 
 function set_url($screen, $group, $thread, $article )
