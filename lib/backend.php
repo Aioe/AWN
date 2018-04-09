@@ -104,7 +104,7 @@ function get_nntp_body($conf, $group, $article, $html, $format)
                 {
                         if (preg_match("/^--/", $output)) $signature = 1;
                         if ($signature == 1) $output = "";
-                        $body .= "$output";
+			if (strlen($output) > 0) $body .= "$output\n";
                 }
         }
 
