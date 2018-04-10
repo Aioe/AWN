@@ -91,7 +91,9 @@ function get_nntp_body($conf, $group, $article, $html, $format)
                                 $output = "[Quoted Text Removed]";
                                 $rem = 2;
                         }
-			$body .= "$output\r\n";
+
+			if ($rem == 0) $output = "$output\r\n";
+			$body .= "$output";
                 }
         }
 
@@ -118,13 +120,19 @@ function get_nntp_body($conf, $group, $article, $html, $format)
                 {
                         $quote = 0;
                         $string = "";
+
+			if (($quote == 0) and ($output[0] == ">") and (strlen($output) < 4)) continue;
+
                         for ($n = 0; $n < strlen($output); $n++)
                         {
                                 if ($output[$n] == ">") $quote++;
                                 if (($output[$n] != " ") and ($output[$n] != ">")) break;
                         }
-                        for ($x = 0; $x != $quote; $x++) $output = preg_replace("/>/", "", $output);
-                        if ($quote > $quotelevel)
+                        for ($x = 0; $x != $quote; $x++)
+			{
+				$output = preg_replace("/>/", "", $output);
+                	}
+		        if ($quote > $quotelevel)
                         {
                                 $diff = $quote - $quotelevel;
                                 for ($quotelevel; $quotelevel != $quote; $quotelevel++) $output = "STARTDIVSTYLEQUOTE$output";
@@ -132,7 +140,12 @@ function get_nntp_body($conf, $group, $article, $html, $format)
                         if ($quote < $quotelevel)
                         {
                                 for ($quotelevel; $quotelevel != $quote; $quotelevel--) $output = "ENDDIVSTYLEQUOTE$output";
-                        } else $output = "$output\r\n";
+                        } else {
+				if ($quote == 0) $output = "$output\r\n";
+				else {
+					if (strlen($output) > 0) $output = "$output\r\n";
+				}		
+			}
 			if (preg_match("/^--/", $output))
 			{
 				$output = "STARTDIVSTYLESIGNATURE$output";
@@ -214,9 +227,9 @@ function get_nntp_body($conf, $group, $article, $html, $format)
                 $body = str_replace("ENDDIVSTYLEQUOTE", "</div>", $body);
                 $body = str_replace("STARTDIVSTYLESIGNATURE", "<div class=\"signature\">", $body);
                 $body = str_replace("ENDDIVSTYLESIGNATURE", "</div>", $body);
-                $body = str_replace("</div><br />", "</div>\n", $body); 
-		$body = str_replace("<br /></div>", "</div>\n", $body);
-		$body = str_replace("<br /><br />", "<br />", $body); 
+ //               $body = str_replace("</div><br />", "</div>\n", $body); 
+//		$body = str_replace("<br /></div>", "</div>\n", $body);
+//		$body = str_replace("<br /><br />", "<br />", $body); 
 		$body = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\-\#\.]*(\?\S+)?)?)?)@', '<a href="$1">$1</a>', $body);
 		$body = str_replace("[Quoted Text Removed]", "<div class=\"textremoved\">[Quoted Text Removed]</div>", $body);
 
