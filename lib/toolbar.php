@@ -37,10 +37,13 @@ function plot_toolbar_tree($conf, $xover, $group, $thread, $article)
         $prev = $t3d[0];
         $next = $t3d[1];
         plot_single_icon($conf, "listgroups", $conf["base"], "List subscribed groups");									// 2
-        $url = set_url("threadlist", $group, $thread, $article );
 
-        plot_single_icon($conf, "listhreads", $url, "List discussion threads");										// 3
-        plot_single_icon($conf, "articles", "?screen=messages&amp;group=$group&amp;thread=$thread&amp;art=$thread", "Show first article in thread");	// 4
+	$arts = $xover[$thread]["followup"];
+	rsort($arts);
+	$last_art = $arts[0];
+
+        plot_single_icon($conf, "first", "?screen=messages&amp;group=$group&amp;thread=$thread&amp;art=$thread", "Jump to first article in thread");										// 3
+        plot_single_icon($conf, "last", "?screen=messages&amp;group=$group&amp;thread=$thread&amp;art=$last_art", "Jump to last article in thread");	// 4
 
         $urlp = set_url("tree", $group, $prev, $article );
         $urln = set_url("tree", $group, $next, $article );

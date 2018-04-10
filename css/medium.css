@@ -120,13 +120,19 @@ a {
 .header {
                 width: 20%;
                 display: inline-block;
-                font-size: larger;
+		font-size: large;
+		color: #a23;
+		vertical-align: top;
 }
 
 .value {
-                width: auto;
+                width: 80%;
                 display: inline-block;
-                font-size: larger;
+		font-size: large;
+		color: #12a;
+  		overflow-wrap: break-word;
+  		word-wrap: break-word;
+		max-width: 80%;
 }
 
 textarea {
@@ -134,7 +140,7 @@ textarea {
                 padding: 1%;
                 font-size: larger;
                 width: 98%;
-                height: 80%;
+		height: 400px;
 }
 
 

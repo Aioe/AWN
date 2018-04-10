@@ -152,7 +152,26 @@ function get_nntp_body($conf, $group, $article, $html, $format)
 	if ($format == 2)
 	{
 		$body = "";
-		foreach ($art as $line) $body .= htmlentities($line, ENT_SUBSTITUTE, $charset) . "<br />";
+		$headers = 1;
+		$ref = 0;
+		foreach ($art as $line) 
+		{
+			if ((preg_match("/^\r\n$/", $line)) and ($headers == 1))
+			{
+				$headers = 0;
+				$body .= "</div><hr />";
+			}
+			if ($headers == 1)
+			{
+				if (preg_match("/^([a-z0-9\-]+):\ (.+)/i", $line, $match))
+				{
+					$header = htmlentities($match[1], ENT_SUBSTITUTE, $charset);
+					$value  = htmlentities($match[2], ENT_SUBSTITUTE, $charset);
+					$line 	= "</div><br /><div class=\"header\">$header: </div><div class=\"value\"> $value"; 
+				} else 	$line = htmlentities($line, ENT_SUBSTITUTE, $charset);
+				$body .= $line;
+			} else $body .= htmlentities($line, ENT_SUBSTITUTE, $charset) . "<br />";
+		}
 		return $body;
 	}
 
@@ -198,11 +217,16 @@ function get_nntp_body($conf, $group, $article, $html, $format)
                 $body = str_replace("</div><br />", "</div>\n", $body); 
 		$body = str_replace("<br /></div>", "</div>\n", $body);
 		$body = str_replace("<br /><br />", "<br />", $body); 
-		$body = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\-\#\.]*(\?\S+)?)?)?)@',
-             '<a href="$1">$1</a>', $body);
+		$body = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\-\#\.]*(\?\S+)?)?)?)@', '<a href="$1">$1</a>', $body);
+		$body = str_replace("[Quoted Text Removed]", "<div class=\"textremoved\">[Quoted Text Removed]</div>", $body);
 
 	}
 
+	if ($format == 1)
+	{
+		$body = str_replace("<br /><br /><br />", "<br />", $body);
+		$body = str_replace("<br /><br />", "<br />", $body);
+	}
 	if ($flowed == 0) $body = str_replace("\r\n", "<br />\n", $body);
 	return "$body";
 
