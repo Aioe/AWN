@@ -129,7 +129,7 @@ function post_toolbar($conf, $type, $newsgroup, $thread, $article, $noquote)
 
 ////////////////////////////////////////
 
-        if ($type == 1) plot_single_icon($conf, "left", "index.php?screen=messages&amp;group=$newsgroup&amp;thread=$thread&amp;art=$article", "Back to message view");
+        if ($type == 1) plot_single_icon($conf, "quit", "index.php?screen=messages&amp;group=$newsgroup&amp;thread=$thread&amp;art=$article", "Back to message view");
 	if ($type == 2) plot_single_icon($conf, "left", "index.php?screen=threadlist&amp;group=$newsgroup&amp;thread=$thread", "Back to discussion thread" );
 
 	echo "<div class=\"toolbaricons\"><input type=\"image\" alt=\"Send message\" src=\"./png/send.png\"></div>\n";
