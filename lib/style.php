@@ -130,10 +130,9 @@ function plot_message($xover, $screen, $group, $thread, $article, $config, $form
         $date = $xover[$article]["Date"];
         $old_time = strtotime($date);
         $date = date(DATE_RFC822, $old_time);
-        $subject = $xover[$article]["Subject"];
 
-	$from 		= clean_header($from, $config, $group, $article);
-	$subject	= clean_header($subject, $config, $group, $article);
+	$from 		= clean_header($xover[$article]["From"], $config, $group, $article);
+	$subject	= clean_header($xover[$article]["Subject"], $config, $group, $article);
 
 
         $ng = $xover[$article]["Group"];
@@ -149,17 +148,10 @@ function plot_message($xover, $screen, $group, $thread, $article, $config, $form
 
 function clean_header($value, $conf, $newsgroup, $article)
 {
-	$result = mb_decode_mimeheader($value);
-	$group = $conf["active"][$newsgroup];
+	$output = mb_decode_mimeheader($value);
+	$output = str_replace("_", " ", $output);
 
-  	$charset = "ISO8859-15"; // Default
-        $ct =  nntp_get_header($conf, $group, $article, "Content-Type", 1);
-        $ct = str_replace("\"", "", $ct);
-	if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match)) $charset = trim($match[1]);
-        $charset = strtoupper($charset);      
-	$result = htmlentities($result, ENT_SUBSTITUTE, $charset);
-
-	return $result;
+	return $output;
 }
 
 function set_url($screen, $group, $thread, $article )
@@ -256,8 +248,9 @@ function plot_tree($xover, $screen, $group, $thread, $article, $conf, $post, $is
 
 	if ($article != $thread)
 	{
-		$old_subject = $xover[$thread]["Subject"];
-		$new_subject = $xover[$article]["Subject"];
+		$old_subject = clean_header($xover[$thread]["Subject"], $conf, $group, $thread);
+		$new_subject = clean_header($xover[$article]["Subject"], $conf, $group, $article);
+
 		$old_subject = "Re: $old_subject";
 		if (!preg_match("/$old_subject/i", $new_subject)) $subject = $new_subject;
 		else $subject = "";

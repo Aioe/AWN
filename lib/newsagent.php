@@ -53,7 +53,7 @@ function get_nntp_article($fh, $path, $group, $article)
 	$banner = fgets($fh, 1024);
 	if (!preg_match("/^220/", $banner))
 	{
-		show_error_string("Sending ARTICLE $article server replies $banner\n", 0);
+		show_error_string("Getting ARTICLE $article server replies $banner\n", 0);
 		return FALSE;
 	}	
 	$art = "";

@@ -15,14 +15,6 @@ function nntp_xover($config, $group)
                 $qpsubject      = quoted_printable_decode($elems[1]);
                 $qpfrom         = quoted_printable_decode($elems[2]);
 
-                $todelete = array("=?UTF-8?Q?", "=?ISO-8859-15?Q?", "iso-8859-1?Q?", "=?", "?=" );
-
-                $qpsubject = str_replace($todelete, "", $qpsubject);
-                $qpfrom = str_replace($todelete, "", $qpfrom);
-
-                $qpsubject = str_replace("_", " ", $qpsubject);
-                $qpfrom = str_replace("_", " ", $qpfrom);
-
                 $xover[$num]["Subject"]         = $qpsubject;
                 $xover[$num]["From"]            = $qpfrom;
                 $xover[$num]["Date"]            = $elems[3];
