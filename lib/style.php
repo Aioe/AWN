@@ -254,10 +254,22 @@ function plot_tree($xover, $screen, $group, $thread, $article, $conf, $post, $is
 	if ($isfirst) $style = "border-bottom: 1px solid #ccc; padding-left: 2%;";
 	else $style = "";
 
+	if ($article != $thread)
+	{
+		$old_subject = $xover[$thread]["Subject"];
+		$new_subject = $xover[$article]["Subject"];
+		$old_subject = "Re: $old_subject";
+		if (!preg_match("/$old_subject/i", $new_subject)) $subject = $new_subject;
+		else $subject = "";
+	} else $subject = "";
+
         echo "<ul style=\"$style\" class=\"lista\">";
-        echo "
+        if ($subject == "") echo "
 <li style=\"$background\"><a href=\"$url\">
-<div class=\"tree\" style=\"border-left: 5px solid $border;\"><b>$fromb</b><br />$date</div></a>";
+<div class=\"tree\" style=\"border-left: 5px solid $border;\"><b>$fromb</b> on $date</div></a>";
+	else echo "
+<li style=\"$background\"><a href=\"$url\">
+<div class=\"tree\" style=\"border-left: 5px solid $border;\"><b>$fromb</b> on $date<br /><b>$subject</b></div></a>";
 
 }
 
