@@ -175,7 +175,7 @@ function get_nntp_body($conf, $group, $article, $html, $format)
 					$line 	= "</div><br /><div class=\"header\">$header: </div><div class=\"value\"> $value"; 
 				} else 	$line = htmlentities($line, ENT_SUBSTITUTE, $charset);
 				$body .= $line;
-			} else $body .= htmlentities($line, ENT_SUBSTITUTE, $charset) . "<br />";
+			}
 		}
 		return $body;
 	}
