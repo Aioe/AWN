@@ -206,6 +206,8 @@ function get_nntp_body($conf, $group, $article, $html, $format)
                 $body = htmlentities($body, ENT_SUBSTITUTE, $charset);
 	}
 
+	if ($html == 1) $body = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\-\#\.]*(\?\S+)?)?)?)@', '<a href="$1">$1</a>', $body);
+
 	if ($flowed == 1)
 	{
 		$lines = explode("\r\n", $body);
@@ -227,10 +229,6 @@ function get_nntp_body($conf, $group, $article, $html, $format)
                 $body = str_replace("ENDDIVSTYLEQUOTE", "</div>", $body);
                 $body = str_replace("STARTDIVSTYLESIGNATURE", "<div class=\"signature\">", $body);
                 $body = str_replace("ENDDIVSTYLESIGNATURE", "</div>", $body);
- //               $body = str_replace("</div><br />", "</div>\n", $body); 
-//		$body = str_replace("<br /></div>", "</div>\n", $body);
-//		$body = str_replace("<br /><br />", "<br />", $body); 
-		$body = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\-\#\.]*(\?\S+)?)?)?)@', '<a href="$1">$1</a>', $body);
 		$body = str_replace("[Quoted Text Removed]", "<div class=\"textremoved\">[Quoted Text Removed]</div>", $body);
 
 	}

@@ -149,27 +149,9 @@ function plot_message($xover, $screen, $group, $thread, $article, $config, $form
 
 function clean_header($value, $conf, $newsgroup, $article)
 {
-        $charset = "ISO8859-15"; // Default
-	$group = $conf["active"][$newsgroup];
-        $ct =  nntp_get_header($conf, $group, $article, "Content-Type", 1);
-        $ct = str_replace("\"", "", $ct);
-        $ce =  nntp_get_header($conf, $group, $article, "Content-Transfer-Encoding", 1);
-        
-        if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match)) $charset = trim($match[1]);
-        $charset = strtoupper($charset);      
+	$result = mb_decode_mimeheader($value);
 
-        if ((!preg_match("/quoted\-printable/i", $ce)) and  (!preg_match("/base64/i", $ce)))
-        {
-                $value = htmlentities($value, ENT_SUBSTITUTE, $charset);
-        } else if (preg_match("/quoted\-printable/i", $ce)) {
-                $value = quoted_printable_decode($value);
-                $value = htmlentities($value, ENT_SUBSTITUTE, $charset);
-        }  else if (preg_match("/base64/i", $ce)) {
-                $value = base64_decode($value);
-                $value = htmlentities($value, ENT_SUBSTITUTE, $charset);
-        }
-
-	return $value;
+	return $result;
 }
 
 function set_url($screen, $group, $thread, $article )

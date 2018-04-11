@@ -1,7 +1,7 @@
 <?php
 
 $conf["spooldir"] = "/var/www/html/test/spool/";
-$conf["etcdir"]	= "/var/www/html/etc/";
+$conf["etcdir"]	= "/var/www/html/test/etc/";
 $conf["home"]   = "http://5.9.252.135";
 $conf["base"]   = "/test/";
 $conf["start"]  = "-800";
@@ -17,7 +17,12 @@ $conf["active"] = array(
 		"it.hobby.fai-da-te",
 		"it.hobby.viaggi",
 		"it.cultura.linguistica.italiano",
-		"it.politica"
+		"it.politica",
+		"it.tlc.cellulari.android",
+		"it.tlc.cellulari.iphone",
+		"it.comp.www.php",
+		"it.lavoro.informatica",
+		"it.media.tv"
                 );
 
 $conf["colors"]["background"] = array(
