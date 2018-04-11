@@ -134,6 +134,11 @@ function plot_message($xover, $screen, $group, $thread, $article, $config, $form
 	$from 		= clean_header($xover[$article]["From"], $config, $group, $article);
 	$subject	= clean_header($xover[$article]["Subject"], $config, $group, $article);
 
+	if (preg_match("/^Re:\ /i", $subject ))
+	{
+		$subject = str_replace("Re: ", "", $subject);
+		$subject = "Re: $subject";
+	}
 
         $ng = $xover[$article]["Group"];
         echo "<div class=\"corpo\">
@@ -150,7 +155,7 @@ function clean_header($value, $conf, $newsgroup, $article)
 {
 	$output = mb_decode_mimeheader($value);
 	$output = str_replace("_", " ", $output);
-
+	$output = htmlentities($output);
 	return $output;
 }
 
@@ -250,9 +255,9 @@ function plot_tree($xover, $screen, $group, $thread, $article, $conf, $post, $is
 	{
 		$old_subject = clean_header($xover[$thread]["Subject"], $conf, $group, $thread);
 		$new_subject = clean_header($xover[$article]["Subject"], $conf, $group, $article);
+		$new_subject = str_replace("Re: ", "", $new_subject);
+		if (strlen($old_subject) != strlen($new_subject)) $subject = $new_subject;
 
-		$old_subject = "Re: $old_subject";
-		if (!preg_match("/$old_subject/i", $new_subject)) $subject = $new_subject;
 		else $subject = "";
 	} else $subject = "";
 
