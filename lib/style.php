@@ -150,6 +150,14 @@ function plot_message($xover, $screen, $group, $thread, $article, $config, $form
 function clean_header($value, $conf, $newsgroup, $article)
 {
 	$result = mb_decode_mimeheader($value);
+	$group = $conf["active"][$newsgroup];
+
+  	$charset = "ISO8859-15"; // Default
+        $ct =  nntp_get_header($conf, $group, $article, "Content-Type", 1);
+        $ct = str_replace("\"", "", $ct);
+	if (preg_match("/charset=([a-z0-9\-]+)/i", $ct, $match)) $charset = trim($match[1]);
+        $charset = strtoupper($charset);      
+	$result = htmlentities($result, ENT_SUBSTITUTE, $charset);
 
 	return $result;
 }
