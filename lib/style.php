@@ -264,10 +264,10 @@ function plot_tree($xover, $screen, $group, $thread, $article, $conf, $post, $is
         echo "<ul style=\"$style\" class=\"lista\">";
         if ($subject == "") echo "
 <li style=\"$background\"><a href=\"$url\">
-<div class=\"tree\" style=\"border-left: 5px solid $border;\"><b>$fromb</b> on $date</div></a>";
+<div class=\"tree\" style=\"border-left: 5px solid $border;\"><b>$fromb</b> $date</div></a>";
 	else echo "
 <li style=\"$background\"><a href=\"$url\">
-<div class=\"tree\" style=\"border-left: 5px solid $border;\"><b>$fromb</b> on $date<br /><b>$subject</b></div></a>";
+<div class=\"tree\" style=\"border-left: 5px solid $border;\"><b>$fromb</b> $date<br /><b>$subject</b></div></a>";
 
 }
 

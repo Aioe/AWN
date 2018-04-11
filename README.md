@@ -10,7 +10,7 @@ another script included in the source code.
 Those who wish to test AWN should follow this checklist:
 
 * Download the full sources
-* change files owner
+* change files owner and permissions
 * edit config.php
 1. server
 2. port
