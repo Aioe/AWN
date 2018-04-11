@@ -206,8 +206,11 @@ function get_nntp_body($conf, $group, $article, $html, $format)
                 $body = htmlentities($body, ENT_SUBSTITUTE, $charset);
 	}
 
-	if ($html == 1) $body = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\-\#\.]*(\?\S+)?)?)?)@', '<a href="$1">$1</a>', $body);
-
+	if ($html == 1) 
+	{
+		$body = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\-\#\.]*(\?\S+)?)?)?)@', '<a href="$1">$1</a>', $body);
+		$body = preg_replace('@(\*[\w_\-\#]+\*)@', '<b>$1</b>', $body );
+	}
 	if ($flowed == 1)
 	{
 		$lines = explode("\r\n", $body);
