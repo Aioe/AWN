@@ -121,14 +121,14 @@ a {
 {
 	width: 10%;
 	display: inline-block;
-	font-size: larger;
+	font-size: large;
 }
 
 .value
 {
-	width: auto;
+	width: 90%;
         display: inline-block;
-	font-size: larger;
+	font-size: large;
 }
 
 textarea {
