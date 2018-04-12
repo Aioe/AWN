@@ -2,6 +2,7 @@
 # AWN v. 0.1 (ALPHA RELEASE -- DO NOT USE IT YET)
 
 AWN is a simple web based newsreader written in php5 (>= 5.1.0) with no other dependancies and designed for smartphones with tight screens. 
+Note: PHP extension (php5-imap) to manage IMAP is *not* required by AWN. 
 AWN doesn't make use of SQL, Javascript and cookies. It's released under the GPLv2 license.
 
 Due security reasons, mostly in order to avoid floods, the main script doesn't directly query the remote news server but reads all data that needs from a file based spool managed by getnews.php, 

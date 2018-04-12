@@ -52,7 +52,6 @@
                 line-height: 180%;
                 font-size: larger;
                 overflow:  auto;
-                letter-spacing: 1%;
                 word-wrap: break-word;         /* All browsers since IE 5.5+ */
                 overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
                 word-break: break-word;
@@ -108,31 +107,28 @@ a {
         	list-style-type:none;
 }
 
-
-.postheaders {
-                border: 1px solid #ccc;
-                background-color: #eee;
-                margin-top: 0.5%;
-                padding: 1%;
-                margin-bottom: 0.5%;
+.postheaders
+{
+	border: 1px solid #ccc;
+	background-color: #eee;
+	margin-top: 0.5%;
+	padding: 1%;
+	margin-bottom: 0.5%;
+	color: #000;
 }
 
-.header {
-                width: 20%;
-                display: inline-block;
-		font-size: large;
-		color: #a23;
-		vertical-align: top;
+.header
+{
+	width: 10%;
+	display: inline-block;
+	font-size: larger;
 }
 
-.value {
-                width: 80%;
-                display: inline-block;
-		font-size: large;
-		color: #12a;
-  		overflow-wrap: break-word;
-  		word-wrap: break-word;
-		max-width: 80%;
+.value
+{
+	width: auto;
+        display: inline-block;
+	font-size: larger;
 }
 
 textarea {
@@ -167,4 +163,77 @@ legend {
         	background-color: #eee;
 }
 
+
+.quote
+{
+        color: #024;
+        border-left: 2px solid #009;
+        margin-top: 2%;
+        margin-bottom: 2%;
+        padding-left: 1%;
+        font-style: oblique;
+}
+
+.quote div
+{
+        color: #600;
+        border-left: 2px solid #900;
+        margin-top: 1%;
+        margin-bottom: 1%;
+        padding-left: 1%;
+}
+
+.quote div div
+{
+        color: #060;
+        border-left: 2px solid #090;
+        margin-top: 1%;
+        margin-bottom: 1%;
+        padding-left: 1%;
+}
+
+.quote div div div
+{
+        color: #330;
+        border-left: 2px solid #550;
+        margin-top: 1%;
+        margin-bottom: 1%;
+        padding-left: 1%;
+}
+
+.quote div div div div
+{
+        color: #033;
+        border-left: 2px solid #055;
+        margin-top: 1%;
+        margin-bottom: 1%;
+        padding-left: 1%;
+}
+
+.signature
+{
+        color: #042;
+}
+
+.textremoved
+{
+        color: #a00;
+        font-weight: bold;
+}
+
+.largeheader
+{
+        width: 15%;
+        display: inline-block;
+	color: #a23;
+	vertical-align: top;
+}
+
+.largevalue
+{
+        width: 85%;
+        display: inline-block;
+	vertical-align: top;
+	color: #12a;
+}
 

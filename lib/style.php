@@ -141,16 +141,15 @@ function plot_message($xover, $screen, $group, $thread, $article, $config, $form
 	}
 
         $ng = $xover[$article]["Group"];
-
-	echo "<div class=\"corpo\">\n";
+        echo "<div class=\"corpo\">\n";
 
 	if ($format != 2) echo "<a href=\"?screen=messages&amp;group=$group&amp;thread=$thread&amp;art=$article&amp;format=2\">\n";
 	else echo "<a href=\"?screen=messages&amp;group=$group&amp;thread=$thread&amp;art=$article&amp;format=0\">\n";
 	echo "
-<div class=\"intestazioni\"><b>From:</b>       $from</div>
-<div class=\"intestazioni\"><b>Newsgroup:</b>  $ng</div>
-<div class=\"intestazioni\"><b>Subject:</b>    $subject</div>
-<div class=\"intestazioni\"><b>Date:</b>       $date</div>
+<div class=\"postheaders\"><div class=\"header\">From</div><div class=\"value\">$from</div></div>
+<div class=\"postheaders\"><div class=\"header\">Group</div><div class=\"value\">$ng</div></div>
+<div class=\"postheaders\"><div class=\"header\">Subject</div><div class=\"value\">$subject</div></div>
+<div class=\"postheaders\"><div class=\"header\">Date</div><div class=\"value\">$date</div></div>
 </a><hr />";
 
 	echo "<div class=\"testo\">$body</div></div>";
