@@ -165,7 +165,7 @@ function get_nntp_body($conf, $group, $article, $html, $format)
 			if ((preg_match("/^\r\n$/", $line)) and ($headers == 1))
 			{
 				$headers = 0;
-				$body .= "</div><hr />";
+				$body .= "</div></div><hr />";
 			}
 			if ($headers == 1)
 			{
@@ -173,8 +173,8 @@ function get_nntp_body($conf, $group, $article, $html, $format)
 				{
 					$header = htmlentities($match[1], ENT_SUBSTITUTE, $charset);
 					$value  = htmlentities($match[2], ENT_SUBSTITUTE, $charset);
-					if ($id == 0) $line = "<div class=\"postheaders\"><div class=\"largeheader\">$header</div><div class=\"largevalue\"> $value";
-					else $line = "</div></div><div class=\"postheaders\"><div class=\"largeheader\">$header</div><div class=\"largevalue\"> $value"; 
+					if ($id == 0) $line = "<div class=\"postheaders\">\n<div class=\"largeheader\">$header</div><div class=\"largevalue\"> $value";
+					else $line = "</div></div>\n<div class=\"postheaders\"><div class=\"largeheader\">$header</div><div class=\"largevalue\"> $value"; 
 					$id++;
 				} else 	$line = htmlentities($line, ENT_SUBSTITUTE, $charset);
 				$body .= $line;
