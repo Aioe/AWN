@@ -218,6 +218,35 @@ function build_dep($xover)
         {
 		if ($num > 0)
 		{
+			if (isset($xover[$num]["References"])) 
+			{
+				$references = explode(" ", $xover[$num]["References"]);
+				$ref = $references[0];						// il primo mid nel reference
+
+				$number = 0;
+
+				foreach($xover as $item => $array)
+				{
+					if ($item > 0)
+					{
+						$oldmid = trim($xover[$item]["Mid"]);
+						if (strcmp($oldmid, $ref) == 0)
+						{
+							$number = $item;
+							break;
+						}
+					}
+				}
+
+				$oldref = $xover[$number]["References"];
+				if (!empty($oldref))
+				{
+					$gg = $xover[$num]["References"];
+				 	$xover[$num]["References"] = $oldref . " " . $gg;	
+				}
+
+			}
+
                 	$mid = $xover[$num]["Mid"];
                 	$replies = array();
 			$structure = array();
@@ -227,10 +256,6 @@ function build_dep($xover)
 				{
 					$replies[] = $item;
 					$structure[$item] = $xover[$item]["Mid"];
-				}
-				if (($item > 0) and (isset($xover[$item]["References"])) and (!strstr($xover[$item]["References"], $mid)))
-				{
-
 				}
 
 			}
