@@ -14,6 +14,7 @@ $start 		= $conf["start"];
 $thread         = GET_header("thread");
 $newsgroup	= GET_header("group");
 $article 	= GET_header("art");
+$format		= GET_header("format");
 
 if (isset($_GET["screen"])) $screen = $_GET["screen"];
 else $screen = "";
@@ -59,10 +60,10 @@ if (($article > 0) and (!check_article_exist($xover, $article))) show_error_stri
 
 if ($screen == "threadlist")
 {
-        plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $article);
+        plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $article, $format);
 } else if ($screen == "tree")
 {
-	build_thread($xover, $screen, $thread, $article, $newsgroup, $conf);
+	build_thread($xover, $screen, $thread, $article, $newsgroup, $conf, $newsgroup, $format);
 } else if ($screen = "messages")
 {
 	$format = GET_header("format");

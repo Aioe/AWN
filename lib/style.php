@@ -1,8 +1,8 @@
 <?php
 
-function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $article)
+function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $article, $format)
 {
-        plot_toolbar($xover, $conf, $screen, $newsgroup, $thread, $article);
+        plot_toolbar($xover, $conf, $screen, $newsgroup, $thread, $article, $format);
         echo "<div class=\"titolo\">" . $conf["active"][$newsgroup] . "</div>";
 
         $container = array();
@@ -72,9 +72,9 @@ function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $a
 
 }
 
-function build_thread($xover, $screen, $thread, $article, $group, $conf, $newsgroup)
+function build_thread($xover, $screen, $thread, $article, $group, $conf, $newsgroup, $format)
 {
-        plot_toolbar($xover, $conf, $screen, $group, $thread, $article);
+        plot_toolbar($xover, $conf, $screen, $group, $thread, $article, $format);
         $messages = $xover[$thread]["followup"];        
         $subject = $xover[$thread]["Subject"];
 
@@ -179,7 +179,7 @@ function set_url($screen, $group, $thread, $article )
 
 function plot_grouplist($config, $screen, $newsgroup, $thread, $article)
 {
-        plot_toolbar(0, $config, $screen, 0, 0, 0);
+        plot_toolbar(0, $config, $screen, 0, 0, 0, "0", "0");
         $start = $config["start"];
         $id = 0;
         foreach($config["active"] as $group)
@@ -208,6 +208,11 @@ echo "
 
 function build_dep($xover)
 {
+////////////////////////////////
+
+// va qui
+
+//////////////////////////////////
 
         foreach ($xover as $num => $array)
         {
@@ -215,7 +220,20 @@ function build_dep($xover)
 		{
                 	$mid = $xover[$num]["Mid"];
                 	$replies = array();
-                	foreach($xover as $item => $array) if (($item > 0) and (isset($xover[$item]["References"])) and (strstr($xover[$item]["References"], $mid))) $replies[] = $item;
+			$structure = array();
+                	foreach($xover as $item => $array) 
+			{
+				if (($item > 0) and (isset($xover[$item]["References"])) and (strstr($xover[$item]["References"], $mid))) 
+				{
+					$replies[] = $item;
+					$structure[$item] = $xover[$item]["Mid"];
+				}
+				if (($item > 0) and (isset($xover[$item]["References"])) and (!strstr($xover[$item]["References"], $mid)))
+				{
+
+				}
+
+			}
                 	$xover[$num]["nr_followup"] = count($replies);
                 	krsort($replies);
                 	$xover[$num]["followup"] = $replies;

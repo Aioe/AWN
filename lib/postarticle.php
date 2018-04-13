@@ -430,7 +430,7 @@ function quote_text($conf, $xover, $group, $article)
 {
 	$from = $xover[$article]["From"];
         $date = $xover[$article]["Date"];
-	$text = get_nntp_body($conf, $group, $article, 0);
+	$text = get_nntp_body($conf, $group, $article, 0, 0);
 
 	$quoted_text = "";
 	$lines = explode("\n", $text);

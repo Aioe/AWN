@@ -108,12 +108,13 @@ function get_nntp_body($conf, $group, $article, $html, $format)
                 $lines = explode("\r\n", $body);
 		$body = "";
 		$signature = 0;
+		$quotelevel = 0;
                 foreach($lines as $output)
                 {
                         $quote = 0;
                         $string = "";
 
-			if (($quote == 0) and ($output[0] == ">") and (strlen($output) < 4)) continue;
+			if ((isset($output[0])) and ($quote == 0) and ($output[0] == ">") and (strlen($output) < 4) and (strlen($output) > 0)) continue;
 
                         for ($n = 0; $n < strlen($output); $n++)
                         {
