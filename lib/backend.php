@@ -33,6 +33,7 @@ function nntp_xover($config, $group)
                 $xover[$num]["References"]      = $elems[5];
                 $xover[$num]["Size"]            = $elems[6];
                 $xover[$num]["Group"]           = $group;
+		$xover[$num]["Number"]		= $elems[0];
                 $xover["Mids"][]                = $elems[4];
         }
 

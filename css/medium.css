@@ -115,6 +115,7 @@ a {
 	padding: 1%;
 	margin-bottom: 0.5%;
 	color: #000;
+	display: block;
 }
 
 .header

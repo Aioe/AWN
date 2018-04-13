@@ -253,11 +253,12 @@ function post_new_message($conf, $group, $message, $subject, $nick, $email)
 	$email = str_replace("\"", "", $email);
 	$sender = "$nick <$email>";
 
+	$sub = mb_encode_mimeheader($subject, "UTf-8");
 	$senderip = get_sender_ip();
 
 	fputs($fh, "X-Sender-IP: $senderip\r\n");
 	fputs($fh, "From: $sender\r\n");
-	fputs($fh, "Subject: $subject\r\n");
+	fputs($fh, "Subject: $sub\r\n");
 	fputs($fh, "Newsgroups: $group\r\n");
 	fputs($fh, "Content-Type: text/plain; charset=UTF-8\r\n");
 	fputs($fh, "\r\n");
@@ -298,9 +299,12 @@ function plot_reply_form($conf, $type, $newsgroup, $article, $thread, $noquote, 
         echo "<div class=\"article\">\n";
         $group = $conf["active"][$newsgroup];
 	$xover = nntp_xover($conf, $group);
-        $subject = $xover[$article]["Subject"];
-        $from = $xover[$article]["From"];
+
+        $subject 	= clean_header($xover[$article]["Subject"], $conf, $newsgroup, $article);
+	$from		= clean_header($xover[$article]["From"], $conf, $newsgroup, $article);
+
         $date = $xover[$article]["Date"];
+
         if ($noquote == 0)
         {
                 $text_to_quote = quote_text($conf, $xover, $group, $article);
@@ -323,25 +327,12 @@ function plot_reply_form($conf, $type, $newsgroup, $article, $thread, $noquote, 
 
         if ((isset($subject)) and (!preg_match("/^RE: /i", $subject))) $subject = "Re: $subject";
 
-        echo "
-<div class=\"postheaders\">
-        <div class=\"header\">Group</div>
-        <div class=\"value\">$group</div>
-</div>";
+        echo "<div class=\"postheaders\"><div class=\"header\">Group</div><div class=\"value\">$group</div></div>";
 
-        if (isset($subject)) echo "
-<div class=\"postheaders\">
-        <div class=\"header\">Subject</div>
-        <div class=\"value\">$subject</div>
-</div>
-";
+        if (isset($subject)) echo "<div class=\"postheaders\"><div class=\"header\">Subject</div><div class=\"value\">$subject</div></div>";
         if (!isset($subject))
         {
-                echo "
-<fieldset>
-    <legend>Subject</legend>
-    <div class=\"postingident\"><input style=\"width: 95%;\" type=\"text\" name=\"subject\" value=\"my subject\"></div>
- </fieldset>\n";
+                echo "<fieldset><legend>Subject</legend><div class=\"postingident\"><input style=\"width: 95%;\" type=\"text\" name=\"subject\" value=\"my subject\"></div></fieldset>\n";
 
         }
 
@@ -369,10 +360,7 @@ function plot_newmessage_form($conf, $type, $newsgroup, $thread, $article, $subj
 	echo "<form action=\"post.php\" method=\"post\">";
         if ($article > 0) echo "<input type=\"hidden\" name=\"art\" value=\"$article\">";
         if ($thread  > 0) echo "<input type=\"hidden\" name=\"thread\" value=\"$thread\">";
-        echo "
-<input type=\"hidden\" name=\"group\" value=\"$newsgroup\">
-<input type=\"hidden\" name=\"type\" value=\"$type\">
-";
+        echo "<input type=\"hidden\" name=\"group\" value=\"$newsgroup\"><input type=\"hidden\" name=\"type\" value=\"$type\">";
         post_toolbar($conf, $type, $newsgroup, $thread, $article, $noquote);
         echo "<div class=\"article\">\n";
         $group = $conf["active"][$newsgroup];
@@ -380,50 +368,22 @@ function plot_newmessage_form($conf, $type, $newsgroup, $thread, $article, $subj
 	$sender = get_sender($conf);
         if ($sender)
         {
-                echo "<div class=\"postheaders\">
-        <div class=\"header\">Sender</div>
-        <div class=\"value\">$sender</div>
-</div>";
+                echo "<div class=\"postheaders\"><div class=\"header\">Sender</div><div class=\"value\">$sender</div></div>";
         }
 
-        echo "
-<div class=\"postheaders\">
-        <div class=\"header\">Group</div>
-        <div class=\"value\">$group</div>
-</div>";
+        echo "<div class=\"postheaders\"><div class=\"header\">Group</div><div class=\"value\">$group</div></div>";
 
-        if (!empty($subject)) echo "
-<div class=\"postheaders\">
-        <div class=\"header\">Subject</div>
-        <div class=\"value\">$subject</div>
-</div>
-";
+        if (!empty($subject)) echo "<div class=\"postheaders\"><div class=\"header\">Subject</div><div class=\"value\">$subject</div></div>";
         else {
-                echo "
-<fieldset>
-    <legend>Subject</legend>
-    <div class=\"postingident\"><input style=\"width: 95%;\" type=\"text\" name=\"subject\" value=\"my subject\"></div>
- </fieldset>\n";
-
+                echo "<fieldset><legend>Subject</legend><div class=\"postingident\"><input style=\"width: 95%;\" type=\"text\" name=\"subject\" value=\"my subject\"></div></fieldset>\n";
         }
 
         if (!$sender)
         {
-                echo "
-<fieldset>
-    <legend>Posting identity</legend>
-    <div class=\"postingident\"><input style=\"width: 25%;\" type=\"text\" name=\"nick\" value=\"$nick\"> <input style=\"width: 70%;\" type=\"text\" name=\"email\" value=\"$email\"></div>
- </fieldset>\n";
-
-
+                echo "<fieldset><legend>Posting identity</legend><div class=\"postingident\"><input style=\"width: 25%;\" type=\"text\" name=\"nick\" value=\"$nick\"> <input style=\"width: 70%;\" type=\"text\" name=\"email\" value=\"$email\"></div></fieldset>\n";
         }
 
-        echo "
-<textarea name=\"message\">
-$text_to_quote
-</textarea>
-</div></form>\n";
-
+        echo "<textarea name=\"message\">$text_to_quote</textarea></div></form>\n";
 }
 
 function quote_text($conf, $xover, $group, $article)
