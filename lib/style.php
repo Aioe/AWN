@@ -238,7 +238,8 @@ function build_dep($xover)
 					}
 				}
 
-				$oldref = $xover[$number]["References"];
+				$oldref = "";
+				if (isset($xover[$number]["References"])) $oldref = $xover[$number]["References"];
 				if (!empty($oldref))
 				{
 					$gg = $xover[$num]["References"];

@@ -74,7 +74,7 @@ function get_nntp_body($conf, $group, $article, $html, $format)
                 $rem = 0;
                 foreach($lines as $output)
                 { 
-                        if ($output[0] == ">") 
+                        if ((isset($output[0])) and ($output[0] == ">")) 
                         {       
                                 $output = "";
                                 if ($rem == 0) $rem = 1;
