@@ -24,7 +24,7 @@ if (
 	($screen != "messages") and
 	($screen != "threadlist") and
 	($screen != "tree") and
-	($screen != "grouplist")) fatal_error("screen", $screen);
+	($screen != "groups")) fatal_error("screen", $screen);
 
 
 if ($newsgroup)
@@ -41,7 +41,7 @@ print_html_head($conf);
 if (($screen == "groups") or (strlen($screen) == 0))
 {
 	$screen = "groups";
-	plot_grouplist($conf, $screen, $newsgroup, $thread, $article );
+	plot_grouplist($conf, $screen, $newsgroup, $thread, $article, $format );
 	print_html_tail($conf);
 	return(0);
 } else $group = $conf["active"][$newsgroup];
@@ -67,7 +67,7 @@ if ($screen == "threadlist")
 } else if ($screen = "messages")
 {
 	$format = GET_header("format");
-	plot_message($xover, $screen, $newsgroup, $thread, $article, $conf, $format);
+	plot_message($xover, $screen, $newsgroup, $thread, $article, $conf, $format, $format);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

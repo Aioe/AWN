@@ -43,7 +43,7 @@ function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $a
 			$color = "background: linear-gradient(+90deg, #fff, $colors[0]);";
                         if ($replies > 0)
                         {
-				$url = set_url("tree", $newsgroup, $start, "");
+				$url = set_url("tree", $newsgroup, $start, "", $format);
                                 $container[$diff] = "
 <a href=\"$url\">
 <div style=\"$color border-left: 5px solid $border;\" class=\"main3d\">
@@ -52,7 +52,7 @@ function plot_threadlist($xover, $start, $conf, $screen, $newsgroup, $thread, $a
 </div></a>
 ";
                         } else {
-              			$url = set_url("messages", $newsgroup, $start, $start);
+              			$url = set_url("messages", $newsgroup, $start, $start, $format);
 //				if ($bgcolor == 0) $bgcolor = "#fff";
 		                $container[$diff] = "
 <a href=\"$url\">
@@ -82,9 +82,7 @@ function build_thread($xover, $screen, $thread, $article, $group, $conf, $newsgr
 
         echo "<div class=\"titolo\">$subjectb</div>";
 
-// plot_tree($xover, $screen, $group, $thread, $article, $conf, $post)
-
-        plot_tree($xover, $screen, $group, $thread, $thread, $conf, $article, 1);
+        plot_tree($xover, $screen, $group, $thread, $thread, $conf, $article, 1, $format);
 
         $mid = $xover[$thread]["Mid"];
 
@@ -97,7 +95,7 @@ function build_thread($xover, $screen, $thread, $article, $group, $conf, $newsgr
                         if (strstr($xover[$post]["References"], $mid))
                         {
                                 $tt++;
-                                plot_tree($xover, $screen, $group, $thread, $post, $conf, $article, 0);
+                                plot_tree($xover, $screen, $group, $thread, $post, $conf, $article, 0, $format);
                                 $mid = $xover[$post]["Mid"];
                                 $key = array_search($post, $messages);
                                 unset($messages[$key]);
@@ -166,18 +164,19 @@ function clean_header($value, $conf, $newsgroup, $article)
 	return $output;
 }
 
-function set_url($screen, $group, $thread, $article )
+function set_url($screen, $group, $thread, $article, $format )
 {
 	$url = "";
 	if (strlen($screen) > 0) $url = "?screen=$screen";
 	if (strlen($group) > 0) $url .= "&amp;group=$group";
 	if (strlen($thread) > 0) $url .= "&amp;thread=$thread";
 	if (strlen($article) > 0) $url .= "&amp;art=$article";
+	if (strlen($format) > 0) $url .= "&amp;format=$format";
 	return $url;
 }
 
 
-function plot_grouplist($config, $screen, $newsgroup, $thread, $article)
+function plot_grouplist($config, $screen, $newsgroup, $thread, $article, $format)
 {
         plot_toolbar(0, $config, $screen, 0, 0, 0, "0", "0");
         $start = $config["start"];
@@ -195,7 +194,7 @@ function plot_grouplist($config, $screen, $newsgroup, $thread, $article)
                 $bgcolor = $colors[0];
                 $border  = $colors[1];
 
-		$url = set_url("threadlist", $id, $thread, $article);
+		$url = set_url("threadlist", $id, $thread, $article, $format);
 echo "
 <a href=\"$url\">
 <div style=\"background: linear-gradient(+90deg, #fff, $colors[0]);  border-left: 5px solid $border;\" class=\"main3d\">
@@ -270,7 +269,7 @@ function build_dep($xover)
 
 
 
-function plot_tree($xover, $screen, $group, $thread, $article, $conf, $post, $isfirst)
+function plot_tree($xover, $screen, $group, $thread, $article, $conf, $post, $isfirst, $format)
 {
         $mid = $xover[$article]["Mid"];
         $from = $xover[$article]["From"];
@@ -294,8 +293,8 @@ function plot_tree($xover, $screen, $group, $thread, $article, $conf, $post, $is
 	if (!empty($bgcolor)) $background = "background-color: $bgcolor;";
 	else $background = "";
 
-
-	$url = set_url("messages", $group, $thread, $article );
+////////
+	$url = set_url("messages", $group, $thread, $article, $format );
 
 	if ($article == $post) $background = "background-color: #bbd";
 

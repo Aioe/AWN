@@ -1,6 +1,6 @@
 <?php
 
-function plot_toolbar_groups($conf, $group, $thread, $article)
+function plot_toolbar_groups($conf, $group, $thread, $article, $format)
 {
 	plot_single_icon($conf, "menu", "", "Back to menu");			// 1
 	plot_single_icon($conf, "listgroups", "", "List subscribed groups");		// 2
@@ -11,9 +11,11 @@ function plot_toolbar_groups($conf, $group, $thread, $article)
 }
 
 
-function plot_toolbar_threadlist($conf, $group, $thread, $article)
+function plot_toolbar_threadlist($conf, $group, $thread, $article, $format)
 { 
-	plot_single_icon($conf, "quit", $conf["home"], "Back to list of threads");						// 1
+	$urlquit = set_url("groups", "", "", "", $format );
+	plot_single_icon($conf, "quit", $urlquit, "Back to list of groups");						// 1
+
         $next = $group + 1;
         if ($next > count($conf["active"]) -1) $next = 0;
         $prev = $group - 1;
@@ -21,8 +23,8 @@ function plot_toolbar_threadlist($conf, $group, $thread, $article)
         plot_single_icon($conf, "newarticle", "post.php?type=2&amp;group=$group", "Compose a new message");	// 3
         plot_single_icon($conf, "tree", "", "Show discussion three");						// 4
 
-        $urlp = set_url("threadlist", $prev, $thread, $article );
-        $urln = set_url("threadlist", $next, $thread, $article );
+        $urlp = set_url("threadlist", $prev, $thread, $article, $format );
+        $urln = set_url("threadlist", $next, $thread, $article, $format );
 
         if ($prev > 0) plot_single_icon($conf, "left", "$urlp", "Previous group");				// 5
         else plot_single_icon($conf, "left", "", "Previous group");
@@ -30,9 +32,9 @@ function plot_toolbar_threadlist($conf, $group, $thread, $article)
         else plot_single_icon($conf, "right", "", "Next");
 }
 
-function plot_toolbar_tree($conf, $xover, $group, $thread, $article)
+function plot_toolbar_tree($conf, $xover, $group, $thread, $article, $format)
 {
-	plot_single_icon($conf, "quit", "?screen=threadlist&amp;group=$group&amp;thread=$thread", "Back to list of threads");											// 1
+	plot_single_icon($conf, "quit", "?screen=threadlist&amp;group=$group&amp;thread=$thread&amp;format=$format", "Back to list of threads");											// 1
 	$t3d = set_next_thread($xover, $group, $thread);
         $prev = $t3d[0];
         $next = $t3d[1];
@@ -42,11 +44,11 @@ function plot_toolbar_tree($conf, $xover, $group, $thread, $article)
 	rsort($arts);
 	$last_art = $arts[0];
 
-        plot_single_icon($conf, "first", "?screen=messages&amp;group=$group&amp;thread=$thread&amp;art=$thread", "Jump to first article in thread");										// 3
-        plot_single_icon($conf, "last", "?screen=messages&amp;group=$group&amp;thread=$thread&amp;art=$last_art", "Jump to last article in thread");	// 4
+        plot_single_icon($conf, "first", "?screen=messages&amp;group=$group&amp;thread=$thread&amp;art=$thread&amp;format=$format", "Jump to first article in thread");										// 3
+        plot_single_icon($conf, "last", "?screen=messages&amp;group=$group&amp;thread=$thread&amp;art=$last_art&amp;format=$format", "Jump to last article in thread");	// 4
 
-        $urlp = set_url("tree", $group, $prev, $article );
-        $urln = set_url("tree", $group, $next, $article );
+        $urlp = set_url("tree", $group, $prev, $article, $format );
+        $urln = set_url("tree", $group, $next, $article, $format );
 
         if ($prev > 0) plot_single_icon($conf, "left", $urlp, "Previous thread");									// 5
         else plot_single_icon($conf, "left", "", "Previous thread");
@@ -56,24 +58,23 @@ function plot_toolbar_tree($conf, $xover, $group, $thread, $article)
 
 function plot_toolbar_messages($conf, $xover, $group, $thread, $article, $format)
 {
-	plot_single_icon($conf, "quit", "index.php?screen=tree&amp;group=$group&amp;thread=$thread", "Back to list of thread"); 	// 1
-	plot_single_icon($conf, "reply", "post.php?type=1&amp;group=$group&amp;thread=$thread&amp;art=$article", "Post a reply");	 		// 3
+	plot_single_icon($conf, "quit", "index.php?screen=tree&amp;group=$group&amp;thread=$thread&amp;format=$format", "Back to list of thread"); 	// 1
+	plot_single_icon($conf, "reply", "post.php?type=1&amp;group=$group&amp;thread=$thread&amp;art=$article&amp;format=$format", "Post a reply");	 		// 3
         $xover = set_next_article($xover, $group, $thread, $article);
         if (isset($xover[$article]["thread"]["prev"])) $prev = $xover[$article]["thread"]["prev"];
         else $prev = "";
         if (isset($xover[$article]["thread"]["next"])) $next = $xover[$article]["thread"]["next"];
         else $next = "";
 
-        $url = set_url("tree", $group, $thread, $article );
+        $url = set_url("tree", $group, $thread, $article, $format );
 
         plot_single_icon($conf, "tree", $url, "Show discussion thread");										// 4
 
         if ($format == 0) plot_single_icon($conf, "text", "?screen=messages&amp;group=$group&amp;thread=$thread&amp;art=$article&amp;format=1", "Show message with no quote");  // 2
         if ($format == 1) plot_single_icon($conf, "source", "?screen=messages&group=$group&amp;thread=$thread&amp;art=$article&amp;format=0", "Show full message");
-	if ($format == 2) plot_single_icon($conf, "text", "?screen=messages&amp;group=$group&amp;thread=$thread&amp;art=$article&amp;format=0", "Show full message");
 
-        $urlp = set_url("messages", $group, $thread, $prev );
-        $urln = set_url("messages", $group, $thread, $next );
+        $urlp = set_url("messages", $group, $thread, $prev, $format );
+        $urln = set_url("messages", $group, $thread, $next, $format );
 
         if ($prev > 0 ) plot_single_icon($conf, "left", $urlp, "Previous article");									// 5
         else plot_single_icon($conf, "left", "", "Previous article");
@@ -86,9 +87,9 @@ function plot_toolbar($xover, $conf, $screen, $group, $thread, $article, $format
 {
         echo "<div class=\"top\">\n";
 
-        if ($screen == "groups") plot_toolbar_groups($conf, $group, $thread, $article); 		// lista dei gruppi
-        elseif ($screen == "threadlist") plot_toolbar_threadlist($conf, $group, $thread, $article);   	//lista dei thread
-        elseif ($screen == "tree") plot_toolbar_tree($conf, $xover, $group, $thread, $article); 		// albero dei messaggi
+        if ($screen == "groups") plot_toolbar_groups($conf, $group, $thread, $article, $format); 		// lista dei gruppi
+        elseif ($screen == "threadlist") plot_toolbar_threadlist($conf, $group, $thread, $article, $format);   	//lista dei thread
+        elseif ($screen == "tree") plot_toolbar_tree($conf, $xover, $group, $thread, $article, $format); 		// albero dei messaggi
         elseif ($screen == "messages") plot_toolbar_messages($conf, $xover, $group, $thread, $article, $format);		// messaggi
 
         echo "</div>\n";

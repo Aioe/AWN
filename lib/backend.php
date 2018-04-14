@@ -154,6 +154,9 @@ function get_nntp_body($conf, $group, $article, $html, $format)
 	$charset = "ISO8859-15"; // Default
 	$ct =  nntp_get_header($conf, $group, $article, "Content-Type", 1);
 	$ct = str_replace("\"", "", $ct);
+
+	if (empty($ct)) $ct = nntp_get_header($conf, $group, $article, "X-RFC2646", 1);
+
 	$ce =  nntp_get_header($conf, $group, $article, "Content-Transfer-Encoding", 1);
 	
 	if ($format == 2)
