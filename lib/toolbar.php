@@ -23,8 +23,8 @@ function plot_toolbar_threadlist($conf, $group, $thread, $article, $format)
         plot_single_icon($conf, "newarticle", "post.php?type=2&amp;group=$group", "Compose a new message");	// 3
         plot_single_icon($conf, "tree", "", "Show discussion three");						// 4
 
-        $urlp = set_url("threadlist", $prev, $thread, $article, $format );
-        $urln = set_url("threadlist", $next, $thread, $article, $format );
+        $urlp = set_url("threadlist", $prev, "", "", $format );
+        $urln = set_url("threadlist", $next, "", "", $format );
 
         if ($prev > 0) plot_single_icon($conf, "left", "$urlp", "Previous group");				// 5
         else plot_single_icon($conf, "left", "", "Previous group");
@@ -78,9 +78,11 @@ function plot_toolbar_messages($conf, $xover, $group, $thread, $article, $format
 
 	$urlf0 = set_url("messages", $group, $thread, $article, 0);
 	$urlf1 = set_url("messages", $group, $thread, $article, 1);
+	$urlf3 = set_url("messages", $group, $thread, $article, 3);
 
         if ($format == 0) plot_single_icon($conf, "text", $urlf1, "Show message with no quote");  // 2
-        if ($format == 1) plot_single_icon($conf, "source", $urlf0, "Show full message");
+        if ($format == 1) plot_single_icon($conf, "text", $urlf3, "Show message with traditional look and feel");
+	if (($format == 3) or ($format == 2))  plot_single_icon($conf, "text", $urlf0, "Show message with graphic quotes");
 
         $urlp = set_url("messages", $group, $thread, $prev, $format );
         $urln = set_url("messages", $group, $thread, $next, $format );
