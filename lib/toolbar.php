@@ -2,12 +2,29 @@
 
 function plot_toolbar_groups($conf, $group, $thread, $article, $format)
 {
-	plot_single_icon($conf, "menu", "", "Back to menu");			// 1
-	plot_single_icon($conf, "listgroups", "", "List subscribed groups");		// 2
-        plot_single_icon($conf, "listhreads", "", "List discussion threads");		// 3
+	plot_single_icon($conf, "menu", "", "Back to menu");
+
+	$urlsub = set_url("subscribe", "", "", "", $format);
+
+	if (isset($conf["User"])) plot_single_icon($conf, "listhreads", $urlsub, "Subscribe groups");
+	if (!isset($conf["User"]))  plot_single_icon($conf, "listhreads", "", "Subscribe groups");		// 2
+        plot_single_icon($conf, "tree", "", "List discussion threads");		// 3
         plot_single_icon($conf, "tree", "", "Show discussion tree");			// 4
         plot_single_icon($conf, "left", "", "Previous");				// 5
         plot_single_icon($conf, "right", "", "Next");					// 6
+}
+
+
+function plot_toolbar_subscribe($conf, $group, $thread, $article, $format)
+{
+        $urlquit = set_url("groups", "", "", "", $format );
+        plot_single_icon($conf, "quit", $urlquit, "Back to list of groups"); 
+
+        plot_single_icon($conf, "tree", "", "Subscribe groups");            // 2
+        plot_single_icon($conf, "listhreads", "", "List discussion threads");           // 3
+        plot_single_icon($conf, "tree", "", "Show discussion tree");                    // 4
+        plot_single_icon($conf, "left", "", "Previous");                                // 5
+        plot_single_icon($conf, "right", "", "Next");                                   // 6
 }
 
 
@@ -102,6 +119,7 @@ function plot_toolbar($xover, $conf, $screen, $group, $thread, $article, $format
         elseif ($screen == "threadlist") plot_toolbar_threadlist($conf, $group, $thread, $article, $format);   	//lista dei thread
         elseif ($screen == "tree") plot_toolbar_tree($conf, $xover, $group, $thread, $article, $format); 		// albero dei messaggi
         elseif ($screen == "messages") plot_toolbar_messages($conf, $xover, $group, $thread, $article, $format);		// messaggi
+	elseif ($screen == "subscribe") plot_toolbar_subscribe($conf, $group, $thread, $article, $format);
 
         echo "</div>\n";
         echo "<div class=\"endtoolbar\">&nbsp;</div>";

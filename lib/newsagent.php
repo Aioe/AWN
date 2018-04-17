@@ -7,8 +7,19 @@ function check_nntp($conf)
 	$start = $conf["start"];
 	$spooldir = $conf["spooldir"];
 
-	foreach($conf["active"] as $group)
+	$activefile = $conf["homedir"] . "/Defaults/active";
+
+	$active = file($activefile);
+	if (!$active)
 	{
+		show_error_string("Unable to open active file: $activefile", 1);
+		return FALSE;
+	}
+
+
+	foreach($active as $group)
+	{
+		$group = trim($group);
 		if (strlen($group) == 0) continue;
 		$retgroup 	= get_nntp_group($fh, $group, $start);
 		if (!$retgroup) return(0);

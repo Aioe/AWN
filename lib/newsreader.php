@@ -1,6 +1,6 @@
 <?php
 
-include("config.php");
+include("init.php");
 include("style.php");
 include("backend.php");
 include("toolbar.php");
@@ -9,33 +9,46 @@ date_default_timezone_set('Europe/Rome');
 
 ///////////////////////////////////////////////////////////////////////////
 
+$conf = init_awn();
+
 $start 		= $conf["start"];
 
 $thread         = GET_header("thread");
 $newsgroup	= GET_header("group");
 $article 	= GET_header("art");
 $format		= GET_header("format");
+$subscribe	= GET_header("subscribe");
+$unsubscribe	= GET_header("unsubscribe");
 
 if (isset($_GET["screen"])) $screen = $_GET["screen"];
 else $screen = "";
+
 
 if (
 	($screen != "") and
 	($screen != "messages") and
 	($screen != "threadlist") and
 	($screen != "tree") and
-	($screen != "groups")) fatal_error("screen", $screen);
+	($screen != "groups") and
+	($screen != "subscribe")) fatal_error("screen", $screen);
 
 
 if ($newsgroup)
 {
 	$groupcount = count($conf["active"]);
-	if (($newsgroup >= $groupcount) or ($newsgroup == 0)) show_error_string("Parameter 'newsgroup' has an invalid value '<i>$newsgroup</i>', aborting", 1);
+	if (($newsgroup > $groupcount) or ($newsgroup == 0)) show_error_string("Parameter 'newsgroup' has an invalid value '<i>$newsgroup</i>', aborting", 1);
 } 
 
 print_html_head($conf);
 
 //////////////////////////////////////////////////////////////////////////////
+
+if ($screen == "subscribe")
+{
+        $success = subscribe_groups($conf, $format, $subscribe, $unsubscribe);
+	if ($success === FALSE) show_error_string("Only authenticated users can subscribe groups", 1);
+}
+
 
 
 if (($screen == "groups") or (strlen($screen) == 0))

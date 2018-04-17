@@ -1,12 +1,14 @@
 <?php
 
-include("config.php");
+include("init.php");
 include("style.php");
 include("backend.php");
 include("toolbar.php");
 include("newsagent.php");
 
 date_default_timezone_set('Europe/Rome');
+
+$conf = init_awn();
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -20,9 +22,10 @@ if (!isset($email)) $email = "&lt;fake@null.invalid&gt;";
 
 $newsgroup      = GET_header("group");
 $type           = GET_header("type");
+$format		= GET_header("format");
 
 $groupcount = count($conf["active"]);
-if (($newsgroup >= $groupcount) or ($newsgroup == 0)) show_error_string("Parameter 'group' has an invalid value '<i>$newsgroup</i>', aborting", 1);
+if (($newsgroup > $groupcount) or ($newsgroup == 0)) show_error_string("Parameter 'group' has an invalid value '<i>$newsgroup</i>', aborting", 1);
 
 if ($type == 1)
 {
@@ -78,7 +81,7 @@ if ($type == 1) // Reply
 			if ($output == TRUE)
                         {
                                 check_nntp($conf);
-                                $url = $conf["home"] . $conf["base"] . "index.php?screen=tree&group=$newsgroup&thread=$thread";
+                                $url = $conf["home"] . $conf["base"] . "index.php?screen=tree&group=$newsgroup&thread=$thread&format=$format";
                                 header("Location: $url");
                         }
 		}
@@ -94,7 +97,7 @@ if ($type == 2) // New message
 		{
 			$output = post_new_message($conf, $conf["active"][$newsgroup], $message, $subject, $nick, $email);
 			check_nntp($conf);
-			$url = $conf["home"] . $conf["base"] . "index.php?screen=threadlist&group=$newsgroup";
+			$url = $conf["home"] . $conf["base"] . "index.php?screen=threadlist&group=$newsgroup&format=$format";
 			header("Location: $url");
 		}
                 //////////////////////////////////////////
@@ -109,35 +112,35 @@ if ($type == 1)
 {
 	if (!isset($subject)) $subject = "";
 	if (!isset($message)) $message = "";
-	plot_reply_form($conf, $type, $newsgroup, $article, $thread, $noquote, $subject, $nick, $email, $message);
+	plot_reply_form($conf, $type, $newsgroup, $article, $thread, $noquote, $subject, $nick, $email, $message, $format);
 }
 
 if ($type == 2) 
 {
 	if (!isset($subject)) $subject = "";
         if (!isset($message)) $message = "";
-	plot_newmessage_form($conf, $type, $newsgroup, $thread, $article, $subject, $nick, $email, $noquote, $message);
+	plot_newmessage_form($conf, $type, $newsgroup, $thread, $article, $subject, $nick, $email, $noquote, $message, $format);
 }
 print_html_tail($conf);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function post_toolbar($conf, $type, $newsgroup, $thread, $article, $noquote)
+function post_toolbar($conf, $type, $newsgroup, $thread, $article, $noquote, $format)
 {
 	echo "<div class=\"top\">\n";
 
 ////////////////////////////////////////
 
-        if ($type == 1) plot_single_icon($conf, "quit", "index.php?screen=messages&amp;group=$newsgroup&amp;thread=$thread&amp;art=$article", "Back to message view");
-	if ($type == 2) plot_single_icon($conf, "left", "index.php?screen=threadlist&amp;group=$newsgroup&amp;thread=$thread", "Back to discussion thread" );
+        if ($type == 1) plot_single_icon($conf, "quit", "index.php?screen=messages&amp;group=$newsgroup&amp;thread=$thread&amp;art=$article&amp;format=$format", "Back to message view");
+	if ($type == 2) plot_single_icon($conf, "left", "index.php?screen=threadlist&amp;group=$newsgroup&amp;thread=$thread&amp;format=$format", "Back to discussion thread" );
 
 	echo "<div class=\"toolbaricons\"><input type=\"image\" alt=\"Send message\" src=\"./png/send.png\"></div>\n";
 
 	if (strlen($thread) > 0) 
 	{
-		plot_single_icon($conf, "quote", "post.php?screen=messages&amp;group=$newsgroup&amp;thread=$thread&amp;art=$article&amp;type=$type", "Post a message");
-		if ($noquote == 0) plot_single_icon($conf, "cancel", "post.php?screen=messages&amp;group=$newsgroup&amp;thread=$thread&amp;art=$article&amp;type=$type&amp;noquote=1", "Redo from start");
+		plot_single_icon($conf, "quote", "post.php?screen=messages&amp;group=$newsgroup&amp;thread=$thread&amp;art=$article&amp;type=$type&amp;format=$format", "Post a message");
+		if ($noquote == 0) plot_single_icon($conf, "cancel", "post.php?screen=messages&amp;group=$newsgroup&amp;thread=$thread&amp;art=$article&amp;type=$type&amp;format=$format&amp;noquote=1", "Redo from start");
                 else  if ($noquote == 1)
                 {
                         echo "<div class=\"toolbaricons\"><input id=\"magic\" type=\"image\" alt=\"Magic quote\" name=\"magic\" src=\"./png/cancel.png\"></div>\n";
@@ -148,7 +151,7 @@ function post_toolbar($conf, $type, $newsgroup, $thread, $article, $noquote)
                 }
 	} else // new message
 	{
-		plot_single_icon($conf, "quote", "post.php?screen=messages&amp;group=$newsgroup&amp;type=$type", "Smart quote sistem");
+		plot_single_icon($conf, "quote", "post.php?screen=messages&amp;group=$newsgroup&amp;format=$format&amp;type=$type", "Smart quote sistem");
 		plot_single_icon($conf, "cancel", "", "Clear data");
 	}
 
@@ -286,16 +289,18 @@ function post_new_message($conf, $group, $message, $subject, $nick, $email)
 
 }
 
-function plot_reply_form($conf, $type, $newsgroup, $article, $thread, $noquote, $subject, $nick, $email, $message)
+function plot_reply_form($conf, $type, $newsgroup, $article, $thread, $noquote, $subject, $nick, $email, $message, $format)
 {
  	echo "<form action=\"post.php\" method=\"post\">";
         if ($article > 0) echo "<input type=\"hidden\" name=\"art\" value=\"$article\">";
         if ($thread  > 0) echo "<input type=\"hidden\" name=\"thread\" value=\"$thread\">";
+	if ($format  > 0) echo "<input type=\"hidden\" name=\"format\" value=\"$format\">";
+
         echo "
 <input type=\"hidden\" name=\"group\" value=\"$newsgroup\">
 <input type=\"hidden\" name=\"type\" value=\"$type\">
 ";
-        post_toolbar($conf, $type, $newsgroup, $thread, $article, $noquote);
+        post_toolbar($conf, $type, $newsgroup, $thread, $article, $noquote, $format);
         echo "<div class=\"article\">\n";
         $group = $conf["active"][$newsgroup];
 	$xover = nntp_xover($conf, $group);
@@ -355,13 +360,14 @@ $text_to_quote
 
 }
 
-function plot_newmessage_form($conf, $type, $newsgroup, $thread, $article, $subject, $nick, $email, $noquote, $message)
+function plot_newmessage_form($conf, $type, $newsgroup, $thread, $article, $subject, $nick, $email, $noquote, $message, $format)
 {
 	echo "<form action=\"post.php\" method=\"post\">";
         if ($article > 0) echo "<input type=\"hidden\" name=\"art\" value=\"$article\">";
         if ($thread  > 0) echo "<input type=\"hidden\" name=\"thread\" value=\"$thread\">";
+	if ($format  > 0) echo "<input type=\"hidden\" name=\"format\" value=\"$format\">";
         echo "<input type=\"hidden\" name=\"group\" value=\"$newsgroup\"><input type=\"hidden\" name=\"type\" value=\"$type\">";
-        post_toolbar($conf, $type, $newsgroup, $thread, $article, $noquote);
+        post_toolbar($conf, $type, $newsgroup, $thread, $article, $noquote, $format);
         echo "<div class=\"article\">\n";
         $group = $conf["active"][$newsgroup];
 	$text_to_quote = "";

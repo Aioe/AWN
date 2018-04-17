@@ -83,3 +83,17 @@
 }
 
 
+.subgroupunselected
+{
+	padding: 2%;
+	border: 1px solid #ddd;
+	font-size: large;
+}
+
+.subgroupselected
+{
+        padding: 2%;
+        border: 1px solid #ddd;
+        font-size: larger;
+	background-color: #9f9;
+}

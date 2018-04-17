@@ -1,52 +1,21 @@
 <?php
 
-$conf["spooldir"] = "/var/www/html/spool/";
-$conf["etcdir"]	= "/var/www/html/etc/";
+$conf["spooldir"] 	= "/var/www/html/test/spool/";
+$conf["etcdir"]		= "/var/www/html/test/etc/";
+$conf["homedir"]	= "/var/www/html/test/home/";
 $conf["home"]   = "http://5.9.252.135";
-$conf["base"]   = "/";
-$conf["start"]  = "-800";
+$conf["base"]   = "/test/";
+$conf["start"]  = "-300";
 $conf["server"] = "127.0.0.1";
 $conf["port"]   = 119;
-$conf["active"] = array(
-                "",
-                "aioe.news.assistenza",
-                "aioe.news.helpdesk",
-                "aioe.test",
-                "it.discussioni.auto",
-		"it.comp.console",
-		"it.hobby.fai-da-te",
-		"it.hobby.viaggi",
-		"it.cultura.linguistica.italiano",
-		"it.politica",
-		"it.tlc.cellulari.android",
-		"it.tlc.cellulari.iphone",
-		"it.comp.www.php",
-		"it.lavoro.informatica",
-		"it.media.tv"
-                );
+$conf["active"] = array();
 
 $conf["colors"]["background"] = array(
-					(86400*15) => "#99FF66",
-					(86400*10) => "#9EFC66",
-					(86400*8) => "#A3FA66",
-					(86400*7) => "#A8F766",
-					(86400*6) => "#ADF566",
-					(86400*5) => "#B2F266",
-					(86400*4) => "#B8F066",
-					(86400*3) => "#BDED66",
-					(86400*2) => "#C2EB66",
-					 86400    => "#C7E866",
-					(3600*16) => "#CCE666",
-					 43200    => "#D1E366",
-					(3600*8)  => "#D6E066",
-					(3600*6)  => "#DBDE66",
-					(3600*4)  => "#E0DB66",
+					999999	  => "#fff",
+					 43200    => "#99FF66",
+					(3600*6)  => "#B2F266",
                                         (3600*3)  => "#E6D966",
-					(3600*2)  => "#EBD666",
-					  3600    => "#F0D466",
-					  1800    => "#F5D166",
-					   900	  => "#FACF66",
-					   600	  => "#FFCC66"
+					  3600    => "#EBD666",
 				    );
 
 $conf["colors"]["border"] = array( 
