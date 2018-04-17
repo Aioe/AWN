@@ -184,8 +184,7 @@ function plot_grouplist($config, $screen, $newsgroup, $thread, $article, $format
 
         plot_toolbar(0, $config, $screen, 0, 0, 0, $format);
 
-	$subgroups = count($config["active"]);
-	if ($subgroups == 0)
+	if (count($config["active"]) == 0)
 	{
 		echo "<h2>Before being read, groups needs to be subscribed</h2>\n";
 		return TRUE;

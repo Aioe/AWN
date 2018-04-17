@@ -96,6 +96,14 @@ function subgroup($conf, $group)
 {
 	$file = $conf["homedir"] . "/" . $conf["User"] . "/active";
 
+	$active = file($file);
+	
+	foreach($active as $oldgroup)
+	{
+		$oldgroup = trim($oldgroup);
+		if ($group == $oldgroup) return TRUE;
+	}
+
 	$fh = fopen($file, "a+");
 	fputs($fh, "$group\n");
 	fclose($fh);

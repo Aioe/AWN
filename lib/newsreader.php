@@ -57,7 +57,13 @@ if (($screen == "groups") or (strlen($screen) == 0))
 	plot_grouplist($conf, $screen, $newsgroup, $thread, $article, $format );
 	print_html_tail($conf);
 	return(0);
-} else $group = $conf["active"][$newsgroup];
+} else {
+	if (isset($conf["active"])) $group = $conf["active"][$newsgroup];
+	if (!isset($conf["active"]))
+	{
+		show_error_string("Missing active!", 1);
+	}
+}
 
 $xover = nntp_xover($conf, $group);
 if (!$xover)
