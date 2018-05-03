@@ -385,7 +385,33 @@ function print_html_tail($conf)
 	return TRUE;
 }
 
+function search_articles($conf, $newsgroup, $searchart, $format)
+{
+	if ($format == "") $format = 0;
+	$xover = "";
+	plot_toolbar($xover, $conf, "searchart", $newsgroup, "", "", $format);
 
+
+	if (strlen($searchart) == 0)
+	{
+		echo "<div class=\"titolo\">Search inside " . $conf["active"][$newsgroup] . "</div>\n";
+		echo "
+<form>
+<input type=\"hidden\" name=\"format\" value=\"$format\">
+<input type=\"hidden\" name=\"screen\" value=\"searchart\">
+<input type=\"hidden\" name=\"group\" value=\"$newsgroup\">
+<fieldset><div class=\"postingident\"> <input style=\"width: 80%;\" type=\"text\" name=\"searchart\">
+<input type=\"submit\" value=\"Search\">
+</fieldset></div>
+</form>";
+
+	} else {
+
+		echo "pppp\n";
+
+	}
+
+}
 
 
 ?>

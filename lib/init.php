@@ -55,8 +55,7 @@ function subscribe_groups($conf, $format, $subscribe, $unsubscribe)
 	
 	$id = 0;
 
-	echo "<dl><dt class=\"titolo\">Available groups</dt>\n";
-
+	echo "<div><ul style=\"margin-right: 0px; padding: 0px;\">\n";
 
 	foreach($total as $group)
 	{
@@ -64,6 +63,44 @@ function subscribe_groups($conf, $format, $subscribe, $unsubscribe)
 		$sel = 0;
 		$group = trim($group);
 		$url = "?screen=subscribe&amp;format=$format&amp;";
+
+		$arts = 0;
+		$dirspool = $conf["spooldir"] . "/data/$group/";
+
+
+ 		$dir = opendir($dirspool);
+    		$c = 0;
+    		while (($file = readdir($dir)) !== false)
+        		if (!in_array($file, array('.', '..')))
+            			$c++;
+    		closedir($dir);
+
+		$arts = $c;
+
+		$dir_size =0;
+    		if (is_dir($dirspool)) 
+		{
+        		if ($dh = opendir($dirspool)) 
+			{
+           			while (($file = readdir($dh)) !== false) 
+				{
+              				if ( $file != "." && $file != "..")
+					{
+                  				if(is_file($dirspool."/".$file))
+						{
+                      					$dir_size += filesize($dirspool."/".$file);
+                  				}
+                 /* check for any new directory inside this directory */
+                 				if(is_dir($dirspool."/".$file))
+						{
+                     					$dir_size +=  get_dir_size($dirspool."/".$file);
+                  				}
+               				}
+           			}
+        		}
+    		}
+		closedir($dh);
+
 
 
 		foreach($active as $subgroup) 
@@ -83,12 +120,10 @@ function subscribe_groups($conf, $format, $subscribe, $unsubscribe)
 			$url .= "subscribe=$id";
 			$htmlclass = "subgroupunselected";
 		}
-		echo "<dd class=\"$htmlclass\"><a href=\"$url\">$group</a></dd>\n";
+		echo "<li class=\"$htmlclass\"><a href=\"$url\">$group<br><div class=\"groupdetails\">$arts articles, $dir_size bytes</a></div></li>\n";
 	}
 	
-	echo "</dl>";
-	
-
+	echo "</ul></div>";	
 }
 
 

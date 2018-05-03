@@ -29,6 +29,7 @@ if (
 	($screen != "messages") and
 	($screen != "threadlist") and
 	($screen != "tree") and
+	($screen != "searchart") and 
 	($screen != "groups") and
 	($screen != "subscribe")) fatal_error("screen", $screen);
 
@@ -49,6 +50,11 @@ if ($screen == "subscribe")
 	if ($success === FALSE) show_error_string("Only authenticated users can subscribe groups", 1);
 }
 
+if ($screen == "searchart")
+{
+	search_articles($conf, $newsgroup, $_GET["searchart"], $format);
+	return(0);
+}
 
 
 if (($screen == "groups") or (strlen($screen) == 0))

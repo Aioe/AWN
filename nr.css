@@ -86,14 +86,22 @@
 .subgroupunselected
 {
 	padding: 2%;
-	border: 1px solid #ddd;
-	font-size: large;
+	border: 1px solid #ccc;
+	font-size: larger;
+	list-style-type: none;
 }
 
 .subgroupselected
 {
         padding: 2%;
-        border: 1px solid #ddd;
+        border: 1px solid #ccc;
         font-size: larger;
-	background-color: #9f9;
+	background-color: #bfa;
+	list-style-type: none;
+	margin-left: 0px;
+}
+
+.groupdetails
+{
+	font-size: smaller;
 }
