@@ -400,14 +400,38 @@ function search_articles($conf, $newsgroup, $searchart, $format)
 <input type=\"hidden\" name=\"format\" value=\"$format\">
 <input type=\"hidden\" name=\"screen\" value=\"searchart\">
 <input type=\"hidden\" name=\"group\" value=\"$newsgroup\">
-<fieldset><div class=\"postingident\"> <input style=\"width: 80%;\" type=\"text\" name=\"searchart\">
-<input type=\"submit\" value=\"Search\">
-</fieldset></div>
+<fieldset style=\"padding-top: 1%;\"><input style=\"width: 98%; height: 50px; font-size: larger;\" type=\"text\" name=\"searchart\">
+<br /><input type=\"submit\" style=\"padding: 3%;\" value=\"Search\">
+</fieldset>
 </form>";
 
 	} else {
+		$group = $conf["active"][$newsgroup];
+		$xover = nntp_xover($conf, $group);
 
-		echo "pppp\n";
+		echo "<div class=\"titolo\">Search results for '$searchart' inside $group</div>\n"; 
+		$dirpath = $conf["spooldir"] . "/data/$group/";
+		$filestoscan = scandir($dirpath);
+		if (!$filestoscan) show_error_string("Unable to read direactory $dirpath!", 1);
+
+		foreach($filestoscan as $filename)
+		{
+			$file = $dirpath . $filename;
+			$testo = file_get_contents($file);
+			if (preg_match("/$searchart/i", $testo))
+			{
+				$subj = clean_header($xover[$filename]["Subject"], $conf, $newsgroup, $filename);
+				$from = clean_header($xover[$filename]["From"], $conf, $newsgroup, $filename);
+				$date = $xover[$filename]["Date"];
+				echo "
+<a href=\"?screen=messages&amp;group=$newsgroup&amp;art=$filename&amp;format=$format\">
+<div class=\"main3d\"><b>$subj</b><br />$from<br />$date</div></a>";
+
+
+
+			}
+			
+		}
 
 	}
 
